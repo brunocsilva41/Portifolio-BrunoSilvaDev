@@ -4,7 +4,7 @@ import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
-import { loadProjects, saveProjects, autoConnectProjects, resetProjects, getAbsolutePosition, PROJECT_GROUPS } from './projects.js';
+import { loadProjects, saveProjects, autoConnectProjects, resetProjects, getAbsolutePosition, PROJECT_GROUPS, PROJECT_VIEWS, getProjectViewPositions } from './projects.js';
 import { setupImportUI } from './import-ui.js';
 
 let projects = loadProjects();
@@ -142,21 +142,52 @@ let groupCenters = {};
 
 const orbitData = [];
 
-function buildScene(projList) {
-  if (!projList || projList.length === 0) return;
-  clearScene();
-  groupCenters = {};
-  orbitData.length = 0;
+let currentView = 'projects';
 
+function getStackConfigs() {
   const byGroup = {};
-  projList.forEach(p => {
+  projects.forEach(p => {
     if (p.group && !p.isCenter) {
       if (!byGroup[p.group]) byGroup[p.group] = [];
       byGroup[p.group].push(p);
     }
   });
+  const shortNames = { frontend: 'FRONT', backend: 'BACK', tools: 'AI' };
+  return Object.entries(byGroup).map(([name, members]) => {
+    const gCfg = PROJECT_GROUPS[name];
+    if (!gCfg) return null;
+    return {
+      center: new THREE.Vector3(gCfg.centerPos.x, gCfg.centerPos.y, gCfg.centerPos.z),
+      color: gCfg.color,
+      label: shortNames[name] || gCfg.label,
+      members, spread: 2.2,
+      key: name,
+    };
+  }).filter(Boolean);
+}
 
-  const drawnGroups = new Set();
+function getProjectConfigs() {
+  const positions = getProjectViewPositions();
+  return PROJECT_VIEWS.map((pv, i) => {
+    const pos = positions[i];
+    const members = pv.repoIds.map(id => projects.find(p => p.id === id)).filter(Boolean);
+    return {
+      center: new THREE.Vector3(pos.x, pos.y, pos.z),
+      color: pv.color,
+      label: pv.name.toUpperCase().slice(0, 7),
+      members, spread: 1.8,
+      key: pv.name,
+    };
+  });
+}
+
+function buildScene(viewMode) {
+  if (!projects || projects.length === 0) return;
+  clearScene();
+  groupCenters = {};
+  orbitData.length = 0;
+
+  const configs = viewMode === 'stacks' ? getStackConfigs() : getProjectConfigs();
 
   function makePlanet(pos, color, p, isCenter) {
     const techCount = (p.tech && p.tech.length) || 3;
@@ -229,139 +260,147 @@ function buildScene(projList) {
     return { mesh, glow, label, radius };
   }
 
-  projList.forEach((p) => {
+  function buildConstellation(cfg) {
+    const gc = cfg.center;
+    const members = cfg.members;
+    const spread = cfg.spread;
+
+    const sunRadius = 0.3;
+    const sGeo = new THREE.SphereGeometry(sunRadius, 24, 24);
+    const sMat = new THREE.MeshPhysicalMaterial({
+      color: cfg.color, emissive: cfg.color, emissiveIntensity: 0.5,
+      metalness: 0.3, roughness: 0.4,
+    });
+    const sunMesh = new THREE.Mesh(sGeo, sMat);
+    sunMesh.position.copy(gc);
+    sunMesh.userData = { isGroupSun: true, phase: Math.random() * Math.PI * 2 };
+    starGroup.add(sunMesh);
+    starMeshes.push(sunMesh);
+
+    const sGlow = new THREE.Sprite(new THREE.SpriteMaterial({
+      map: createGlowTexture(new THREE.Color(cfg.color)),
+      blending: THREE.AdditiveBlending, transparent: true,
+      opacity: 0.3, depthWrite: false,
+    }));
+    sGlow.scale.set(4, 4, 1);
+    sGlow.position.copy(gc);
+    starGroup.add(sGlow);
+    glowSprites.push(sGlow);
+
+    const sLabel = document.createElement('div');
+    sLabel.className = 'star-label center-label';
+    sLabel.textContent = cfg.label;
+    sLabel.style.color = cfg.color;
+    const sLabelObj = new CSS2DObject(sLabel);
+    sLabelObj.position.set(gc.x, gc.y - sunRadius - 0.7, gc.z);
+    labelGroup.add(sLabelObj);
+
+    groupCenters[cfg.key] = gc;
+
+    const dir = new THREE.Vector3().copy(gc).negate().normalize();
+    const ringUp = new THREE.Vector3(0, 1, 0);
+    if (Math.abs(dir.dot(ringUp)) > 0.99) ringUp.set(0, 0, 1);
+    const ringRight = new THREE.Vector3().crossVectors(dir, ringUp).normalize();
+    const ringNormal = new THREE.Vector3().crossVectors(ringRight, dir).normalize();
+
+    function ringPos(angle, radius) {
+      return new THREE.Vector3()
+        .copy(gc)
+        .add(ringRight.clone().multiplyScalar(Math.cos(angle) * radius))
+        .add(ringNormal.clone().multiplyScalar(Math.sin(angle) * radius));
+    }
+
+    const r1 = new THREE.Mesh(
+      new THREE.RingGeometry(spread - 0.08, spread, 64),
+      new THREE.MeshBasicMaterial({ color: cfg.color, transparent: true, opacity: 0.05, side: THREE.DoubleSide, depthWrite: false })
+    );
+    r1.position.copy(gc); r1.lookAt(0, 0, 0);
+    haloGroup.add(r1);
+
+    const r2 = new THREE.Mesh(
+      new THREE.RingGeometry(spread + 0.02, spread + 0.08, 64),
+      new THREE.MeshBasicMaterial({ color: cfg.color, transparent: true, opacity: 0.02, side: THREE.DoubleSide, depthWrite: false })
+    );
+    r2.position.copy(gc); r2.lookAt(0, 0, 0);
+    haloGroup.add(r2);
+
+    const dotCount = 48;
+    const dp = new Float32Array(dotCount * 3);
+    for (let j = 0; j < dotCount; j++) {
+      const a = (j / dotCount) * Math.PI * 2;
+      const p = ringPos(a, spread);
+      dp[j*3] = p.x; dp[j*3+1] = p.y; dp[j*3+2] = p.z;
+    }
+    const dMesh = new THREE.Points(
+      new THREE.BufferGeometry().setAttribute('position', new THREE.Float32BufferAttribute(dp, 3)),
+      new THREE.PointsMaterial({ color: cfg.color, size: 0.07, transparent: true, opacity: 0.12, blending: THREE.AdditiveBlending, depthWrite: false, sizeAttenuation: true })
+    );
+    haloGroup.add(dMesh);
+
+    const gRing = new THREE.Sprite(new THREE.SpriteMaterial({
+      map: createGlowTexture(new THREE.Color(cfg.color), 64),
+      blending: THREE.AdditiveBlending, transparent: true, opacity: 0.03, depthWrite: false,
+    }));
+    gRing.scale.set(spread * 4, spread * 4, 1);
+    gRing.position.copy(gc);
+    haloGroup.add(gRing);
+
+    const oct = 48;
+    const outerSpread = spread + 0.6;
+    const op = new Float32Array(oct * 3);
+    for (let j = 0; j < oct; j++) {
+      const a = (j / oct) * Math.PI * 2;
+      const p = ringPos(a, outerSpread);
+      op[j*3] = p.x; op[j*3+1] = p.y; op[j*3+2] = p.z;
+    }
+    const oMesh = new THREE.Points(
+      new THREE.BufferGeometry().setAttribute('position', new THREE.Float32BufferAttribute(op, 3)),
+      new THREE.PointsMaterial({ color: cfg.color, size: 0.02, transparent: true, opacity: 0.04, blending: THREE.AdditiveBlending, depthWrite: false, sizeAttenuation: true })
+    );
+    oMesh.userData = { isOrbit: true, speed: 0.04 + Math.random() * 0.02 };
+    haloGroup.add(oMesh);
+
+    const memberCount = members.length;
+    const groupSpeed = 0.2;
+    members.forEach((proj, mi) => {
+      const angle = (mi / memberCount) * Math.PI * 2;
+      const initPos = ringPos(angle, spread);
+
+      const { mesh, glow, label, radius } = makePlanet(initPos, new THREE.Color(proj.color), proj, false);
+
+      mesh.userData.orbit = { center: gc.clone(), angle, dist: spread, speed: groupSpeed, ringRight: ringRight.clone(), ringNormal: ringNormal.clone() };
+      mesh.userData.label = label;
+      mesh.userData.glow = glow;
+      glow.userData.orbit = mesh.userData.orbit;
+    });
+  }
+
+  projects.forEach(p => {
     if (p.isCenter) {
       const abs = getAbsolutePosition(p);
       const pos = new THREE.Vector3(abs.x, abs.y, abs.z);
       makePlanet(pos, new THREE.Color(p.color), p, true);
-      return;
-    }
-
-    if (p.group && !drawnGroups.has(p.group)) {
-      drawnGroups.add(p.group);
-      const gCfg = PROJECT_GROUPS[p.group];
-      if (!gCfg) return;
-      const gc = new THREE.Vector3(gCfg.centerPos.x, gCfg.centerPos.y, gCfg.centerPos.z);
-      groupCenters[p.group] = gc;
-
-      const members = byGroup[p.group] || [];
-
-      const sunRadius = 0.3;
-      const sGeo = new THREE.SphereGeometry(sunRadius, 24, 24);
-      const sMat = new THREE.MeshPhysicalMaterial({
-        color: gCfg.color, emissive: gCfg.color, emissiveIntensity: 0.5,
-        metalness: 0.3, roughness: 0.4,
-      });
-      const sunMesh = new THREE.Mesh(sGeo, sMat);
-      sunMesh.position.copy(gc);
-      sunMesh.userData = { isGroupSun: true, phase: Math.random() * Math.PI * 2 };
-      starGroup.add(sunMesh);
-      starMeshes.push(sunMesh);
-
-      const sGlow = new THREE.Sprite(new THREE.SpriteMaterial({
-        map: createGlowTexture(new THREE.Color(gCfg.color)),
-        blending: THREE.AdditiveBlending, transparent: true,
-        opacity: 0.3, depthWrite: false,
-      }));
-      sGlow.scale.set(4, 4, 1);
-      sGlow.position.copy(gc);
-      starGroup.add(sGlow);
-      glowSprites.push(sGlow);
-
-      const sLabel = document.createElement('div');
-      sLabel.className = 'star-label center-label';
-      const shortNames = { frontend: 'FRONT', backend: 'BACK', tools: 'AI' };
-      sLabel.textContent = shortNames[p.group] || gCfg.label;
-      sLabel.style.color = gCfg.color;
-      const sLabelObj = new CSS2DObject(sLabel);
-      sLabelObj.position.set(gc.x, gc.y - sunRadius - 0.7, gc.z);
-      labelGroup.add(sLabelObj);
-
-      const spread = 2.2;
-
-      // Vertical orbit ring: faces toward origin (like lookAt(0,0,0))
-      const dir = new THREE.Vector3().copy(gc).negate().normalize();
-      const ringUp = new THREE.Vector3(0, 1, 0);
-      if (Math.abs(dir.dot(ringUp)) > 0.99) ringUp.set(0, 0, 1);
-      const ringRight = new THREE.Vector3().crossVectors(dir, ringUp).normalize();
-      const ringNormal = new THREE.Vector3().crossVectors(ringRight, dir).normalize();
-
-      function ringPos(angle, radius) {
-        return new THREE.Vector3()
-          .copy(gc)
-          .add(ringRight.clone().multiplyScalar(Math.cos(angle) * radius))
-          .add(ringNormal.clone().multiplyScalar(Math.sin(angle) * radius));
-      }
-
-      const r1 = new THREE.Mesh(
-        new THREE.RingGeometry(spread - 0.08, spread, 64),
-        new THREE.MeshBasicMaterial({ color: gCfg.color, transparent: true, opacity: 0.05, side: THREE.DoubleSide, depthWrite: false })
-      );
-      r1.position.copy(gc); r1.lookAt(0, 0, 0);
-      haloGroup.add(r1);
-
-      const r2 = new THREE.Mesh(
-        new THREE.RingGeometry(spread + 0.02, spread + 0.08, 64),
-        new THREE.MeshBasicMaterial({ color: gCfg.color, transparent: true, opacity: 0.02, side: THREE.DoubleSide, depthWrite: false })
-      );
-      r2.position.copy(gc); r2.lookAt(0, 0, 0);
-      haloGroup.add(r2);
-
-      // Dotted orbit ring — follows the same vertical plane as the planets
-      const dotCount = 48;
-      const dp = new Float32Array(dotCount * 3);
-      for (let j = 0; j < dotCount; j++) {
-        const a = (j / dotCount) * Math.PI * 2;
-        const p = ringPos(a, spread);
-        dp[j*3] = p.x; dp[j*3+1] = p.y; dp[j*3+2] = p.z;
-      }
-      const dMesh = new THREE.Points(
-        new THREE.BufferGeometry().setAttribute('position', new THREE.Float32BufferAttribute(dp, 3)),
-        new THREE.PointsMaterial({ color: gCfg.color, size: 0.07, transparent: true, opacity: 0.12, blending: THREE.AdditiveBlending, depthWrite: false, sizeAttenuation: true })
-      );
-      haloGroup.add(dMesh);
-
-      const gRing = new THREE.Sprite(new THREE.SpriteMaterial({
-        map: createGlowTexture(new THREE.Color(gCfg.color), 64),
-        blending: THREE.AdditiveBlending, transparent: true, opacity: 0.03, depthWrite: false,
-      }));
-      gRing.scale.set(spread * 4, spread * 4, 1);
-      gRing.position.copy(gc);
-      haloGroup.add(gRing);
-
-      // Outer orbit ring — fainter, slightly larger
-      const oct = 48;
-      const outerSpread = spread + 0.6;
-      const op = new Float32Array(oct * 3);
-      for (let j = 0; j < oct; j++) {
-        const a = (j / oct) * Math.PI * 2;
-        const p = ringPos(a, outerSpread);
-        op[j*3] = p.x; op[j*3+1] = p.y; op[j*3+2] = p.z;
-      }
-      const oMesh = new THREE.Points(
-        new THREE.BufferGeometry().setAttribute('position', new THREE.Float32BufferAttribute(op, 3)),
-        new THREE.PointsMaterial({ color: gCfg.color, size: 0.02, transparent: true, opacity: 0.04, blending: THREE.AdditiveBlending, depthWrite: false, sizeAttenuation: true })
-      );
-      oMesh.userData = { isOrbit: true, speed: 0.04 + Math.random() * 0.02 };
-      haloGroup.add(oMesh);
-
-      const memberCount = members.length;
-      const groupSpeed = 0.2;
-      members.forEach((proj, mi) => {
-        const angle = (mi / memberCount) * Math.PI * 2;
-        const initPos = ringPos(angle, spread);
-
-        const { mesh, glow, label, radius } = makePlanet(initPos, new THREE.Color(proj.color), proj, false);
-
-        mesh.userData.orbit = { center: gc.clone(), angle, dist: spread, speed: groupSpeed, ringRight: ringRight.clone(), ringNormal: ringNormal.clone() };
-        mesh.userData.label = label;
-        mesh.userData.glow = glow;
-        glow.userData.orbit = mesh.userData.orbit;
-      });
     }
   });
 
-  buildLines(projList);
+  configs.forEach(cfg => buildConstellation(cfg));
+
+  buildLines(projects);
+}
+
+function switchView(mode) {
+  if (mode === currentView) return;
+  currentView = mode;
+  buildScene(mode);
+  controls.autoRotate = true;
+  controls.target.set(0, 0, 0);
+  camera.position.set(0, 2, 14);
+  controls.update();
+  const btn = document.getElementById('view-btn');
+  if (btn) btn.innerHTML = mode === 'projects'
+    ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg> STACKS'
+    : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg> PROJETOS';
+  showToast(`Visão: ${mode === 'projects' ? 'Projetos' : 'Stacks'}`);
 }
 
 const lineConnections = [];
@@ -903,27 +942,19 @@ window.addEventListener('resize', onResize);
 function rebuildConstellation() {
   if (isAnimating) return;
   hideProjectOverlay();
-  controls.autoRotate = false;
   selectedStar = null; cameraOrigin = null; animTarget = null; isAnimating = false;
-camera.position.set(0, 2, 18);
+  camera.position.set(0, 2, 18);
   controls.target.set(0, 0, 0);
+  controls.autoRotate = true;
   controls.update();
-document.getElementById('overview-btn')?.addEventListener('click', () => {
-  if (isAnimating) return;
-  isAnimating = true;
-  controls.autoRotate = false;
-  const overviewTarget = new THREE.Vector3(0, 1, 22);
-  travelTarget = {
-    from: camera.position.clone(), to: overviewTarget,
-    targetFrom: controls.target.clone(), targetTo: new THREE.Vector3(0, 0, 0),
-    progress: 0, duration: 2.0, group: '__overview__',
-  };
-  const status = document.getElementById('travel-status');
-  if (status) {
-    status.textContent = 'VISÃO GERAL DA CONSTELAÇÃO';
-    status.classList.add('active');
-    setTimeout(() => status.classList.remove('active'), 2800);
-  }
+  buildScene(currentView);
+}
+
+setupImportUI((newProject) => {
+  projects.push(newProject);
+  projects = autoConnectProjects(projects);
+  saveProjects(projects);
+  rebuildConstellation();
 });
 
 const themeCycle = [
@@ -945,16 +976,30 @@ document.getElementById('theme-btn')?.addEventListener('click', () => {
   showToast(`Tema: ${t.name}`);
 });
 
-buildScene(projects);
-  setTimeout(() => { controls.autoRotate = true }, 2000);
-}
-
-setupImportUI((newProject) => {
-  projects.push(newProject);
-  projects = autoConnectProjects(projects);
-  saveProjects(projects);
-  rebuildConstellation();
+document.getElementById('overview-btn')?.addEventListener('click', () => {
+  if (isAnimating) return;
+  isAnimating = true;
+  controls.autoRotate = false;
+  const overviewTarget = new THREE.Vector3(0, 1, 22);
+  travelTarget = {
+    from: camera.position.clone(), to: overviewTarget,
+    targetFrom: controls.target.clone(), targetTo: new THREE.Vector3(0, 0, 0),
+    progress: 0, duration: 2.0, group: '__overview__',
+  };
+  const status = document.getElementById('travel-status');
+  if (status) {
+    status.textContent = 'VISÃO GERAL DA CONSTELAÇÃO';
+    status.classList.add('active');
+    setTimeout(() => status.classList.remove('active'), 2800);
+  }
 });
+
+document.getElementById('view-btn')?.addEventListener('click', () => {
+  switchView(currentView === 'projects' ? 'stacks' : 'projects');
+});
+
+buildScene('projects');
+setTimeout(() => { controls.autoRotate = true }, 2000);
 
 const loadingText = 'INICIALIZANDO CONSTELAÇÃO...';
 const loadingEl = document.getElementById('loading-text');
@@ -1034,8 +1079,7 @@ let travelTarget = null;
 function travelToConstellation(group) {
   if (isAnimating && !animTarget && !travelTarget) isAnimating = false;
   if (isAnimating || !group) return;
-  const gCfg = PROJECT_GROUPS[group];
-  if (!gCfg) return;
+  if (!groupCenters[group]) return;
   isAnimating = true;
   controls.autoRotate = false;
   hideProjectOverlay();
@@ -1045,9 +1089,10 @@ function travelToConstellation(group) {
   const activeBtn = document.querySelector(`.nav-star[data-group="${group}"]`);
   activeBtn?.classList.add('active');
 
-  const dist = 4 + Math.sqrt(gCfg.centerPos.x**2 + gCfg.centerPos.y**2 + gCfg.centerPos.z**2) * 0.3;
-  const targetPos = new THREE.Vector3(gCfg.centerPos.x, gCfg.centerPos.y, gCfg.centerPos.z + dist);
-  const targetLook = new THREE.Vector3(gCfg.centerPos.x, gCfg.centerPos.y, gCfg.centerPos.z);
+  const gc = groupCenters[group];
+  const dist = 4 + Math.sqrt(gc.x**2 + gc.y**2 + gc.z**2) * 0.3;
+  const targetPos = new THREE.Vector3(gc.x, gc.y, gc.z + dist);
+  const targetLook = new THREE.Vector3(gc.x, gc.y, gc.z);
   const from = camera.position.clone();
   const fromTarget = controls.target.clone();
 
@@ -1060,8 +1105,7 @@ function travelToConstellation(group) {
 
   const status = document.getElementById('travel-status');
   if (status) {
-    const names = { frontend: 'FRONTEND & WEB', backend: 'BACKEND & INFRA', tools: 'AI & AUTOMAÇÃO' };
-    status.textContent = `VIAGEM PARA ${names[group] || group}`;
+    status.textContent = `VIAGEM PARA ${group.toUpperCase()}`;
     status.classList.add('active');
   }
 
@@ -1076,8 +1120,6 @@ function travelToConstellation(group) {
     warpParticles.geometry.attributes.position.needsUpdate = true;
   }
 }
-
-buildScene(projects);
 
 let lastTime = performance.now();
 let totalTime = 0;

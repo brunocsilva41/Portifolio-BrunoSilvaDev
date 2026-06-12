@@ -190,6 +190,67 @@ export const DEFAULT_PROJECTS = [
   },
 ]
 
+// Project view: groups repos that complete each other into full projects
+export const PROJECT_VIEWS = [
+  {
+    name: 'Café Gourmet',
+    desc: 'Plataforma completa de e-commerce para cafeteria artesanal com frontend React e API REST.',
+    color: '#f9a873',
+    repoIds: [8, 10],
+  },
+  {
+    name: 'Casamento',
+    desc: 'Sistema de gerenciamento de cerimônia: site com confirmação de presença + API de gestão de convidados.',
+    color: '#6dd5ed',
+    repoIds: [7, 9],
+  },
+  {
+    name: 'Ferramentas DevOps',
+    desc: 'Automação de deploy, middlewares de integração e servidores MCP para bancos de dados.',
+    color: '#50e3c2',
+    repoIds: [14, 11, 2],
+  },
+  {
+    name: 'AI & Automação',
+    desc: 'Agentes inteligentes multi-provedor e automação de terminais com IA.',
+    color: '#a78bfa',
+    repoIds: [3, 12],
+  },
+  {
+    name: 'Aplicações Web',
+    desc: 'Landing pages responsivas e dashboards financeiros interativos.',
+    color: '#ff6b9d',
+    repoIds: [5, 6],
+  },
+  {
+    name: 'Sistemas',
+    desc: 'SaaS para notas fiscais e interface web para gerenciamento de bancos de dados.',
+    color: '#ffd76b',
+    repoIds: [4, 13],
+  },
+  {
+    name: 'TrioOnline',
+    desc: 'Jogo multiplayer com engine determinística, matchmaking e deploy contínuo em Kubernetes.',
+    color: '#6c8cff',
+    repoIds: [1],
+  },
+];
+
+export function getProjectViewPositions() {
+  const count = PROJECT_VIEWS.length;
+  const radius = 5.5;
+  const positions = [];
+  for (let i = 0; i < count; i++) {
+    const angle = (i / count) * Math.PI * 2 - Math.PI / 2;
+    positions.push({
+      x: Math.cos(angle) * radius,
+      y: -1.5 + Math.sin(angle * 2) * 0.5,
+      z: Math.sin(angle) * radius - 2,
+    });
+  }
+  return positions;
+}
+
 export function loadProjects() {
   try {
     const saved = localStorage.getItem(STORAGE_KEY)

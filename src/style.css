@@ -425,8 +425,6 @@ canvas {
 }
 
 #bottom-bar button {
-  width: 44px; height: 44px;
-  border-radius: 50%;
   border: 1px solid var(--glass-border);
   background: var(--glass-bg);
   backdrop-filter: blur(16px);
@@ -437,6 +435,21 @@ canvas {
   transition: all 0.3s ease;
   box-shadow: 0 4px 24px rgba(0,0,0,0.4);
   pointer-events: all;
+}
+
+#view-btn {
+  width: auto; height: 44px;
+  border-radius: 22px;
+  padding: 0 18px;
+  gap: 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 1.5px;
+}
+
+#bottom-bar button:not(#view-btn) {
+  width: 44px; height: 44px;
+  border-radius: 50%;
 }
 
 #bottom-bar button:hover {
