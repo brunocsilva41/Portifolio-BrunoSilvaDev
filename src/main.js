@@ -290,7 +290,7 @@ function buildScene(projList) {
       r2.position.copy(gc); r2.lookAt(0, 0, 0);
       haloGroup.add(r2);
 
-      const dotCount = 36;
+      const dotCount = 48;
       const dp = new Float32Array(dotCount * 3);
       for (let j = 0; j < dotCount; j++) {
         const a = (j / dotCount) * Math.PI * 2;
@@ -312,18 +312,18 @@ function buildScene(projList) {
       gRing.position.copy(gc);
       haloGroup.add(gRing);
 
-      const oct = 50;
+      const oct = 48;
+      const outerSpread = spread + 0.6;
       const op = new Float32Array(oct * 3);
       for (let j = 0; j < oct; j++) {
-        const a = (j / oct) * Math.PI * 2 + Math.random() * 0.2;
-        const r = spread + 0.6 + Math.random() * 0.5;
-        op[j*3] = gc.x + Math.cos(a) * r;
-        op[j*3+1] = gc.y + Math.sin(a) * (0.2 + Math.random() * 0.15);
-        op[j*3+2] = gc.z + Math.sin(a) * r * 0.5;
+        const a = (j / oct) * Math.PI * 2;
+        op[j*3] = gc.x + Math.cos(a) * outerSpread;
+        op[j*3+1] = gc.y + Math.sin(a) * 0.5;
+        op[j*3+2] = gc.z + Math.sin(a) * outerSpread * 0.6;
       }
       const oMesh = new THREE.Points(
         new THREE.BufferGeometry().setAttribute('position', new THREE.Float32BufferAttribute(op, 3)),
-        new THREE.PointsMaterial({ color: gCfg.color, size: 0.03, transparent: true, opacity: 0.06, blending: THREE.AdditiveBlending, depthWrite: false, sizeAttenuation: true })
+        new THREE.PointsMaterial({ color: gCfg.color, size: 0.02, transparent: true, opacity: 0.04, blending: THREE.AdditiveBlending, depthWrite: false, sizeAttenuation: true })
       );
       oMesh.userData = { isOrbit: true, speed: 0.04 + Math.random() * 0.02 };
       haloGroup.add(oMesh);
@@ -332,16 +332,15 @@ function buildScene(projList) {
       const groupSpeed = 0.2;
       members.forEach((proj, mi) => {
         const angle = (mi / memberCount) * Math.PI * 2;
-        const dist = spread;
-        const yOff = Math.sin(angle * 2) * 0.25;
 
-        const initX = gc.x + Math.cos(angle) * dist;
-        const initZ = gc.z + Math.sin(angle) * dist;
-        const initPos = new THREE.Vector3(initX, gc.y + yOff, initZ);
+        const initX = gc.x + Math.cos(angle) * spread;
+        const initZ = gc.z + Math.sin(angle) * spread * 0.6;
+        const initY = gc.y + Math.sin(angle) * 0.3;
+        const initPos = new THREE.Vector3(initX, initY, initZ);
 
         const { mesh, glow, label, radius } = makePlanet(initPos, new THREE.Color(proj.color), proj, false);
 
-        mesh.userData.orbit = { center: gc.clone(), angle, dist, yOff, speed: groupSpeed };
+        mesh.userData.orbit = { center: gc.clone(), angle, dist: spread, speed: groupSpeed };
         mesh.userData.label = label;
         mesh.userData.glow = glow;
         glow.userData.orbit = mesh.userData.orbit;
@@ -787,8 +786,9 @@ function animateStars(time) {
       const o = m.userData.orbit;
       o.angle += 0.004 * o.speed;
       const x = o.center.x + Math.cos(o.angle) * o.dist;
-      const z = o.center.z + Math.sin(o.angle) * o.dist;
-      m.position.set(x, o.center.y + o.yOff, z);
+      const y = o.center.y + Math.sin(o.angle) * 0.3;
+      const z = o.center.z + Math.sin(o.angle) * o.dist * 0.6;
+      m.position.set(x, y, z);
       if (m.userData.glow) m.userData.glow.position.copy(m.position);
       if (m.userData.label) {
         const lo = m.userData.isCenter ? 0.9 : 0.55;
