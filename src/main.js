@@ -38,6 +38,9 @@ labelContainer.appendChild(labelRenderer.domElement);
 const composer = new EffectComposer(renderer);
 composer.addPass(new RenderPass(scene, camera));
 
+const _orbitPos = new THREE.Vector3();
+const _orbitRight = new THREE.Vector3();
+const _orbitNormal = new THREE.Vector3();
 const bloomPass = new UnrealBloomPass(
   new THREE.Vector2(window.innerWidth, window.innerHeight),
   0.15, 0.2, 0.1
@@ -276,6 +279,20 @@ function buildScene(projList) {
 
       const spread = 2.2;
 
+      // Vertical orbit ring: faces toward origin (like lookAt(0,0,0))
+      const dir = new THREE.Vector3().copy(gc).negate().normalize();
+      const ringUp = new THREE.Vector3(0, 1, 0);
+      if (Math.abs(dir.dot(ringUp)) > 0.99) ringUp.set(0, 0, 1);
+      const ringRight = new THREE.Vector3().crossVectors(dir, ringUp).normalize();
+      const ringNormal = new THREE.Vector3().crossVectors(ringRight, dir).normalize();
+
+      function ringPos(angle, radius) {
+        return new THREE.Vector3()
+          .copy(gc)
+          .add(ringRight.clone().multiplyScalar(Math.cos(angle) * radius))
+          .add(ringNormal.clone().multiplyScalar(Math.sin(angle) * radius));
+      }
+
       const r1 = new THREE.Mesh(
         new THREE.RingGeometry(spread - 0.08, spread, 64),
         new THREE.MeshBasicMaterial({ color: gCfg.color, transparent: true, opacity: 0.05, side: THREE.DoubleSide, depthWrite: false })
@@ -290,13 +307,13 @@ function buildScene(projList) {
       r2.position.copy(gc); r2.lookAt(0, 0, 0);
       haloGroup.add(r2);
 
+      // Dotted orbit ring — follows the same vertical plane as the planets
       const dotCount = 48;
       const dp = new Float32Array(dotCount * 3);
       for (let j = 0; j < dotCount; j++) {
         const a = (j / dotCount) * Math.PI * 2;
-        dp[j*3] = gc.x + Math.cos(a) * spread;
-        dp[j*3+1] = gc.y + Math.sin(a) * 0.3;
-        dp[j*3+2] = gc.z + Math.sin(a) * spread * 0.6;
+        const p = ringPos(a, spread);
+        dp[j*3] = p.x; dp[j*3+1] = p.y; dp[j*3+2] = p.z;
       }
       const dMesh = new THREE.Points(
         new THREE.BufferGeometry().setAttribute('position', new THREE.Float32BufferAttribute(dp, 3)),
@@ -312,14 +329,14 @@ function buildScene(projList) {
       gRing.position.copy(gc);
       haloGroup.add(gRing);
 
+      // Outer orbit ring — fainter, slightly larger
       const oct = 48;
       const outerSpread = spread + 0.6;
       const op = new Float32Array(oct * 3);
       for (let j = 0; j < oct; j++) {
         const a = (j / oct) * Math.PI * 2;
-        op[j*3] = gc.x + Math.cos(a) * outerSpread;
-        op[j*3+1] = gc.y + Math.sin(a) * 0.5;
-        op[j*3+2] = gc.z + Math.sin(a) * outerSpread * 0.6;
+        const p = ringPos(a, outerSpread);
+        op[j*3] = p.x; op[j*3+1] = p.y; op[j*3+2] = p.z;
       }
       const oMesh = new THREE.Points(
         new THREE.BufferGeometry().setAttribute('position', new THREE.Float32BufferAttribute(op, 3)),
@@ -332,15 +349,11 @@ function buildScene(projList) {
       const groupSpeed = 0.2;
       members.forEach((proj, mi) => {
         const angle = (mi / memberCount) * Math.PI * 2;
-
-        const initX = gc.x + Math.cos(angle) * spread;
-        const initZ = gc.z + Math.sin(angle) * spread * 0.6;
-        const initY = gc.y + Math.sin(angle) * 0.3;
-        const initPos = new THREE.Vector3(initX, initY, initZ);
+        const initPos = ringPos(angle, spread);
 
         const { mesh, glow, label, radius } = makePlanet(initPos, new THREE.Color(proj.color), proj, false);
 
-        mesh.userData.orbit = { center: gc.clone(), angle, dist: spread, speed: groupSpeed };
+        mesh.userData.orbit = { center: gc.clone(), angle, dist: spread, speed: groupSpeed, ringRight: ringRight.clone(), ringNormal: ringNormal.clone() };
         mesh.userData.label = label;
         mesh.userData.glow = glow;
         glow.userData.orbit = mesh.userData.orbit;
@@ -785,10 +798,12 @@ function animateStars(time) {
     if (m.userData.orbit) {
       const o = m.userData.orbit;
       o.angle += 0.004 * o.speed;
-      const x = o.center.x + Math.cos(o.angle) * o.dist;
-      const y = o.center.y + Math.sin(o.angle) * 0.3;
-      const z = o.center.z + Math.sin(o.angle) * o.dist * 0.6;
-      m.position.set(x, y, z);
+      const cosa = Math.cos(o.angle) * o.dist;
+      const sina = Math.sin(o.angle) * o.dist;
+      _orbitRight.copy(o.ringRight).multiplyScalar(cosa);
+      _orbitNormal.copy(o.ringNormal).multiplyScalar(sina);
+      _orbitPos.copy(o.center).add(_orbitRight).add(_orbitNormal);
+      m.position.copy(_orbitPos);
       if (m.userData.glow) m.userData.glow.position.copy(m.position);
       if (m.userData.label) {
         const lo = m.userData.isCenter ? 0.9 : 0.55;
