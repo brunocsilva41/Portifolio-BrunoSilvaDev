@@ -4,7 +4,7 @@ import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
-import { loadProjects, saveProjects, autoConnectProjects, resetProjects, getAbsolutePosition, PROJECT_GROUPS, PROJECT_VIEWS, getProjectViewPositions } from './projects.js';
+import { loadProjects, saveProjects, autoConnectProjects, resetProjects, PROJECT_GROUPS, PROJECT_VIEWS } from './projects.js';
 import { setupImportUI } from './import-ui.js';
 
 let projects = loadProjects();
@@ -13,7 +13,7 @@ projects = autoConnectProjects(projects);
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x040a1a);
 const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
-camera.position.set(0, 2, 18);
+camera.position.set(0, 8, 0.1);
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -38,9 +38,6 @@ labelContainer.appendChild(labelRenderer.domElement);
 const composer = new EffectComposer(renderer);
 composer.addPass(new RenderPass(scene, camera));
 
-const _orbitPos = new THREE.Vector3();
-const _orbitRight = new THREE.Vector3();
-const _orbitNormal = new THREE.Vector3();
 const bloomPass = new UnrealBloomPass(
   new THREE.Vector2(window.innerWidth, window.innerHeight),
   0.15, 0.2, 0.1
@@ -53,7 +50,7 @@ controls.dampingFactor = 0.08;
 controls.minDistance = 4;
 controls.maxDistance = 30;
 controls.maxPolarAngle = Math.PI / 2;
-controls.minPolarAngle = 0.05;
+controls.minPolarAngle = 0;
 controls.autoRotate = true;
 controls.autoRotateSpeed = 0.4;
 controls.target.set(0, 0, 0);
@@ -78,8 +75,8 @@ scene.add(shootingStarGroup);
 const starMeshes = [];
 const glowSprites = [];
 const lineMeshes = [];
-const lineAnimData = [];
 const shootingStars = [];
+const labelObjects = [];
 
 function clearScene() {
   [starGroup, lineGroup, haloGroup, labelGroup, shootingStarGroup].forEach(group => {
@@ -96,9 +93,10 @@ function clearScene() {
   starMeshes.length = 0;
   glowSprites.length = 0;
   lineMeshes.length = 0;
-  lineAnimData.length = 0;
-  lineConnections.length = 0;
+  orbitLines.length = 0;
   shootingStars.length = 0;
+  constellationOrbits.length = 0;
+  labelObjects.length = 0;
 }
 
 function createStarTexture(size = 128) {
@@ -138,11 +136,11 @@ function createGlowTexture(color, size = 256) {
   return new THREE.CanvasTexture(canvas);
 }
 
-let groupCenters = {};
 
 const orbitData = [];
 
 let currentView = 'projects';
+const constellationOrbits = [];
 
 function getStackConfigs() {
   const byGroup = {};
@@ -153,30 +151,42 @@ function getStackConfigs() {
     }
   });
   const shortNames = { frontend: 'FRONT', backend: 'BACK', tools: 'AI' };
-  return Object.entries(byGroup).map(([name, members]) => {
+  const entries = Object.entries(byGroup).filter(([name]) => PROJECT_GROUPS[name]);
+  const count = entries.length;
+  return entries.map(([name, members], i) => {
     const gCfg = PROJECT_GROUPS[name];
-    if (!gCfg) return null;
+    const angle = (i / count) * Math.PI * 2 - Math.PI / 2;
     return {
-      center: new THREE.Vector3(gCfg.centerPos.x, gCfg.centerPos.y, gCfg.centerPos.z),
       color: gCfg.color,
       label: shortNames[name] || gCfg.label,
       members, spread: 2.2,
       key: name,
+      orbitAngle: angle,
+      orbitRadius: 6.5,
+      orbitY: 0,
     };
-  }).filter(Boolean);
+  });
 }
 
 function getProjectConfigs() {
-  const positions = getProjectViewPositions();
-  return PROJECT_VIEWS.map((pv, i) => {
-    const pos = positions[i];
+  const byGroup = {};
+  PROJECT_VIEWS.forEach(pv => {
     const members = pv.repoIds.map(id => projects.find(p => p.id === id)).filter(Boolean);
+    if (members.length > 0) byGroup[pv.name] = members;
+  });
+  const entries = Object.entries(byGroup);
+  const count = entries.length;
+  return entries.map(([name, members], i) => {
+    const pv = PROJECT_VIEWS.find(p => p.name === name);
+    const angle = (i / count) * Math.PI * 2 - Math.PI / 2;
     return {
-      center: new THREE.Vector3(pos.x, pos.y, pos.z),
-      color: pv.color,
-      label: pv.name.toUpperCase().slice(0, 7),
+      color: pv ? pv.color : '#6c8cff',
+      label: name,
       members, spread: 1.8,
-      key: pv.name,
+      key: name,
+      orbitAngle: angle,
+      orbitRadius: 6.5,
+      orbitY: 0,
     };
   });
 }
@@ -184,105 +194,81 @@ function getProjectConfigs() {
 function buildScene(viewMode) {
   if (!projects || projects.length === 0) return;
   clearScene();
-  groupCenters = {};
   orbitData.length = 0;
 
   const configs = viewMode === 'stacks' ? getStackConfigs() : getProjectConfigs();
 
-  function makePlanet(pos, color, p, isCenter) {
+  function makePlanet(pos, color, p, isCenter = false) {
     const techCount = (p.tech && p.tech.length) || 3;
-    const radius = isCenter ? 0.5 : 0.18 + Math.min(techCount, 8) * 0.035;
-    const segs = isCenter ? 48 : 24;
+    const radius = isCenter ? 0.65 : (0.18 + Math.min(techCount, 8) * 0.035);
 
-    const geo = new THREE.SphereGeometry(radius, segs, segs);
+    const geo = new THREE.SphereGeometry(radius, 32, 32);
     const mat = new THREE.MeshPhysicalMaterial({
-      color, emissive: color, emissiveIntensity: isCenter ? 0.6 : 0.25,
-      metalness: isCenter ? 0.6 : 0.1, roughness: isCenter ? 0.2 : 0.6,
-      clearcoat: isCenter ? 1.0 : 0.3, clearcoatRoughness: 0.15,
+      color, emissive: color, emissiveIntensity: isCenter ? 0.8 : 0.25,
+      metalness: isCenter ? 0.0 : 0.1, roughness: isCenter ? 0.2 : 0.6,
+      clearcoat: isCenter ? 0.6 : 0.3, clearcoatRoughness: 0.15,
     });
     const mesh = new THREE.Mesh(geo, mat);
     mesh.position.copy(pos);
-    mesh.userData = { projectId: p.id, phase: Math.random() * Math.PI * 2, isCenter };
+    mesh.userData = { projectId: p.id, phase: Math.random() * Math.PI * 2, radius, isCenter };
     starGroup.add(mesh);
     starMeshes.push(mesh);
 
-    if (!isCenter && Math.random() < 0.35) {
-      const rg = new THREE.TorusGeometry(radius * 1.7, radius * 0.12, 12, 32);
-      const rm = new THREE.MeshPhysicalMaterial({
-        color, emissive: color, emissiveIntensity: 0.1,
-        transparent: true, opacity: 0.2, side: THREE.DoubleSide,
-        metalness: 0.3, roughness: 0.7,
-      });
-      const ringM = new THREE.Mesh(rg, rm);
-      ringM.position.copy(pos);
-      ringM.rotation.x = Math.PI / 2.8 + (Math.random() - 0.5) * 0.4;
-      ringM.rotation.z = (Math.random() - 0.5) * 0.3;
-      ringM.userData = { isRing: true };
-      starGroup.add(ringM);
-      starMeshes.push(ringM);
-    }
-
+    const gSize = isCenter ? 6 : 2.5;
     const gMat = new THREE.SpriteMaterial({
-      map: createGlowTexture(color),
+      map: createGlowTexture(isCenter ? new THREE.Color('#ffffff') : color),
       blending: THREE.AdditiveBlending, transparent: true,
-      opacity: isCenter ? 0.5 : 0.2, depthWrite: false,
+      opacity: isCenter ? 0.35 : 0.2, depthWrite: false,
     });
     const glow = new THREE.Sprite(gMat);
-    glow.scale.set(isCenter ? 6 : 2.5, isCenter ? 6 : 2.5, 1);
+    glow.scale.set(gSize, gSize, 1);
     glow.position.copy(pos);
-    glow.userData = { parentMesh: mesh, isCenter };
+    glow.userData = { parentMesh: mesh };
     starGroup.add(glow);
     glowSprites.push(glow);
 
     const lDiv = document.createElement('div');
-    lDiv.className = 'star-label' + (isCenter ? ' center-label' : '');
-    lDiv.textContent = isCenter ? 'MEU PERFIL' : p.title;
+    lDiv.className = isCenter ? 'star-label center-star-label' : 'star-label';
+    lDiv.textContent = p.title;
     lDiv.style.color = isCenter ? '#ffffff' : p.color;
     const label = new CSS2DObject(lDiv);
-    const lo = isCenter ? 0.9 : 0.55;
-    label.position.set(pos.x, pos.y - radius - lo, pos.z);
+    label.position.set(pos.x, pos.y - radius - (isCenter ? 0.9 : 0.55), pos.z);
     labelGroup.add(label);
-
-    if (isCenter) {
-      const rGeo = new THREE.TorusGeometry(0.65, 0.03, 24, 48);
-      const rMat = new THREE.MeshPhysicalMaterial({
-        color: '#4488ff', emissive: '#4488ff', emissiveIntensity: 0.3,
-        transparent: true, opacity: 0.4, metalness: 0.9, roughness: 0.1,
-      });
-      const ring = new THREE.Mesh(rGeo, rMat);
-      ring.position.copy(pos);
-      ring.rotation.x = Math.PI / 2.5;
-      ring.userData = { isRing: true };
-      starGroup.add(ring);
-      starMeshes.push(ring);
-    }
+    labelObjects.push(label);
 
     return { mesh, glow, label, radius };
   }
 
   function buildConstellation(cfg) {
-    const gc = cfg.center;
+    const initAngle = cfg.orbitAngle;
+    const orbitR = cfg.orbitRadius;
+    const orbitY = cfg.orbitY || 0;
+    const gc = new THREE.Vector3(
+      Math.cos(initAngle) * orbitR,
+      orbitY,
+      Math.sin(initAngle) * orbitR
+    );
     const members = cfg.members;
     const spread = cfg.spread;
 
-    const sunRadius = 0.3;
+    const sunRadius = 0.35;
     const sGeo = new THREE.SphereGeometry(sunRadius, 24, 24);
     const sMat = new THREE.MeshPhysicalMaterial({
-      color: cfg.color, emissive: cfg.color, emissiveIntensity: 0.5,
+      color: cfg.color, emissive: cfg.color, emissiveIntensity: 0.6,
       metalness: 0.3, roughness: 0.4,
     });
     const sunMesh = new THREE.Mesh(sGeo, sMat);
     sunMesh.position.copy(gc);
-    sunMesh.userData = { isGroupSun: true, phase: Math.random() * Math.PI * 2 };
+    sunMesh.userData = { isGroupSun: true, isConstellationCenter: true, constellationKey: cfg.key, phase: Math.random() * Math.PI * 2 };
     starGroup.add(sunMesh);
     starMeshes.push(sunMesh);
 
     const sGlow = new THREE.Sprite(new THREE.SpriteMaterial({
       map: createGlowTexture(new THREE.Color(cfg.color)),
       blending: THREE.AdditiveBlending, transparent: true,
-      opacity: 0.3, depthWrite: false,
+      opacity: 0.25, depthWrite: false,
     }));
-    sGlow.scale.set(4, 4, 1);
+    sGlow.scale.set(3.5, 3.5, 1);
     sGlow.position.copy(gc);
     starGroup.add(sGlow);
     glowSprites.push(sGlow);
@@ -292,176 +278,119 @@ function buildScene(viewMode) {
     sLabel.textContent = cfg.label;
     sLabel.style.color = cfg.color;
     const sLabelObj = new CSS2DObject(sLabel);
-    sLabelObj.position.set(gc.x, gc.y - sunRadius - 0.7, gc.z);
+    sLabelObj.position.set(gc.x, gc.y - sunRadius - 0.6, gc.z);
     labelGroup.add(sLabelObj);
+    labelObjects.push(sLabelObj);
 
-    groupCenters[cfg.key] = gc;
-
-    const dir = new THREE.Vector3().copy(gc).negate().normalize();
-    const ringUp = new THREE.Vector3(0, 1, 0);
-    if (Math.abs(dir.dot(ringUp)) > 0.99) ringUp.set(0, 0, 1);
-    const ringRight = new THREE.Vector3().crossVectors(dir, ringUp).normalize();
-    const ringNormal = new THREE.Vector3().crossVectors(ringRight, dir).normalize();
-
-    function ringPos(angle, radius) {
-      return new THREE.Vector3()
-        .copy(gc)
-        .add(ringRight.clone().multiplyScalar(Math.cos(angle) * radius))
-        .add(ringNormal.clone().multiplyScalar(Math.sin(angle) * radius));
-    }
-
+    // Flat horizontal ring
     const r1 = new THREE.Mesh(
-      new THREE.RingGeometry(spread - 0.08, spread, 64),
-      new THREE.MeshBasicMaterial({ color: cfg.color, transparent: true, opacity: 0.05, side: THREE.DoubleSide, depthWrite: false })
+      new THREE.RingGeometry(spread - 0.06, spread, 64),
+      new THREE.MeshBasicMaterial({ color: cfg.color, transparent: true, opacity: 0.06, side: THREE.DoubleSide, depthWrite: false })
     );
-    r1.position.copy(gc); r1.lookAt(0, 0, 0);
+    r1.position.copy(gc);
+    r1.rotation.x = -Math.PI / 2;
+    r1.userData.isRingGeo = true;
     haloGroup.add(r1);
-
-    const r2 = new THREE.Mesh(
-      new THREE.RingGeometry(spread + 0.02, spread + 0.08, 64),
-      new THREE.MeshBasicMaterial({ color: cfg.color, transparent: true, opacity: 0.02, side: THREE.DoubleSide, depthWrite: false })
-    );
-    r2.position.copy(gc); r2.lookAt(0, 0, 0);
-    haloGroup.add(r2);
-
-    const dotCount = 48;
-    const dp = new Float32Array(dotCount * 3);
-    for (let j = 0; j < dotCount; j++) {
-      const a = (j / dotCount) * Math.PI * 2;
-      const p = ringPos(a, spread);
-      dp[j*3] = p.x; dp[j*3+1] = p.y; dp[j*3+2] = p.z;
-    }
-    const dMesh = new THREE.Points(
-      new THREE.BufferGeometry().setAttribute('position', new THREE.Float32BufferAttribute(dp, 3)),
-      new THREE.PointsMaterial({ color: cfg.color, size: 0.07, transparent: true, opacity: 0.12, blending: THREE.AdditiveBlending, depthWrite: false, sizeAttenuation: true })
-    );
-    haloGroup.add(dMesh);
-
-    const gRing = new THREE.Sprite(new THREE.SpriteMaterial({
-      map: createGlowTexture(new THREE.Color(cfg.color), 64),
-      blending: THREE.AdditiveBlending, transparent: true, opacity: 0.03, depthWrite: false,
-    }));
-    gRing.scale.set(spread * 4, spread * 4, 1);
-    gRing.position.copy(gc);
-    haloGroup.add(gRing);
-
-    const oct = 48;
-    const outerSpread = spread + 0.6;
-    const op = new Float32Array(oct * 3);
-    for (let j = 0; j < oct; j++) {
-      const a = (j / oct) * Math.PI * 2;
-      const p = ringPos(a, outerSpread);
-      op[j*3] = p.x; op[j*3+1] = p.y; op[j*3+2] = p.z;
-    }
-    const oMesh = new THREE.Points(
-      new THREE.BufferGeometry().setAttribute('position', new THREE.Float32BufferAttribute(op, 3)),
-      new THREE.PointsMaterial({ color: cfg.color, size: 0.02, transparent: true, opacity: 0.04, blending: THREE.AdditiveBlending, depthWrite: false, sizeAttenuation: true })
-    );
-    oMesh.userData = { isOrbit: true, speed: 0.04 + Math.random() * 0.02 };
-    haloGroup.add(oMesh);
 
     const memberCount = members.length;
     const groupSpeed = 0.2;
+    const planets = [];
     members.forEach((proj, mi) => {
       const angle = (mi / memberCount) * Math.PI * 2;
-      const initPos = ringPos(angle, spread);
+      const px = gc.x + Math.cos(angle) * spread;
+      const py = gc.y;
+      const pz = gc.z + Math.sin(angle) * spread;
+      const initPos = new THREE.Vector3(px, py, pz);
 
-      const { mesh, glow, label, radius } = makePlanet(initPos, new THREE.Color(proj.color), proj, false);
+      const { mesh, glow, label, radius } = makePlanet(initPos, new THREE.Color(proj.color), proj);
 
-      mesh.userData.orbit = { center: gc.clone(), angle, dist: spread, speed: groupSpeed, ringRight: ringRight.clone(), ringNormal: ringNormal.clone() };
+      const orbit = { center: gc.clone(), angle, dist: spread, speed: groupSpeed };
+      mesh.userData.orbit = orbit;
       mesh.userData.label = label;
       mesh.userData.glow = glow;
-      glow.userData.orbit = mesh.userData.orbit;
+      glow.userData.orbit = orbit;
+      planets.push({ mesh, glow, label, orbit });
+    });
+
+    constellationOrbits.push({
+      key: cfg.key,
+      spread, sunMesh, sGlow, sLabelObj, sunRadius,
+      ringMesh: r1,
+      planets,
     });
   }
 
-  projects.forEach(p => {
-    if (p.isCenter) {
-      const abs = getAbsolutePosition(p);
-      const pos = new THREE.Vector3(abs.x, abs.y, abs.z);
-      makePlanet(pos, new THREE.Color(p.color), p, true);
-    }
-  });
+  const center = projects.find(p => p.isCenter);
+  if (center) {
+    makePlanet(new THREE.Vector3(0, 0, 0), new THREE.Color('#ffffff'), center, true);
+  }
 
   configs.forEach(cfg => buildConstellation(cfg));
 
-  buildLines(projects);
+  buildLines();
+}
+
+function updateNavButtons(mode) {
+  const container = document.querySelector('.console-btns');
+  if (!container) return;
+  const configs = mode === 'stacks' ? getStackConfigs() : getProjectConfigs();
+  container.innerHTML = configs.map(c => {
+    const color = c.color;
+    const label = c.label;
+    return `<button class="nav-star" data-group="${c.key}">
+      <svg class="star-icon" width="20" height="20" viewBox="0 0 48 48"><path d="M24 3 L28.5 17 L43 17 L31 27 L35 42 L24 33 L13 42 L17 27 L5 17 L19.5 17 Z" fill="${color}"/></svg>
+      <span class="nav-label">${label}</span>
+    </button>`;
+  }).join('');
 }
 
 function switchView(mode) {
   if (mode === currentView) return;
   currentView = mode;
+  constellationFocus = null;
   buildScene(mode);
   controls.autoRotate = true;
   controls.target.set(0, 0, 0);
-  camera.position.set(0, 2, 14);
+  camera.position.set(0, 8, 0.1);
   controls.update();
   const btn = document.getElementById('view-btn');
   if (btn) btn.innerHTML = mode === 'projects'
     ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg> STACKS'
     : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg> PROJETOS';
+  updateNavButtons(mode);
   showToast(`Visão: ${mode === 'projects' ? 'Projetos' : 'Stacks'}`);
 }
 
-const lineConnections = [];
+const orbitLines = [];
 
-function buildLines(projList) {
-  lineConnections.length = 0;
-
-  const meshMap = {};
-  starMeshes.forEach(m => {
-    if (m.userData.projectId !== undefined) meshMap[m.userData.projectId] = m;
+function addLine(a, b, color, opacity) {
+  const pts = [a.clone(), b.clone()];
+  const geo = new THREE.BufferGeometry().setFromPoints(pts);
+  const mat = new THREE.LineBasicMaterial({
+    color, transparent: true, opacity,
+    blending: THREE.AdditiveBlending, depthWrite: false,
   });
+  const line = new THREE.Line(geo, mat);
+  lineGroup.add(line);
+  lineMeshes.push(line);
+  return line;
+}
 
-  const drawn = new Set();
-  projList.forEach(p => {
-    if (!p.connections) return;
-    p.connections.forEach(connId => {
-      const key = Math.min(p.id, connId) + '-' + Math.max(p.id, connId);
-      if (drawn.has(key)) return;
-      drawn.add(key);
-      const fromMesh = meshMap[p.id];
-      const toMesh = meshMap[connId];
-      if (!fromMesh || !toMesh) return;
+function buildLines() {
+  lineMeshes.length = 0;
+  orbitLines.length = 0;
 
-      const getPos = (m) => m.position.clone();
+  constellationOrbits.forEach(co => {
+    const center = new THREE.Vector3(0, 0, 0);
 
-      const from = getPos(fromMesh);
-      const to = getPos(toMesh);
-      const mid = from.clone().add(to).multiplyScalar(0.5);
-      const offset = mid.clone().normalize().multiplyScalar(0.3);
-      const ctrl = mid.clone().add(offset);
+    // Line from solar center to constellation center (live ref to sunMesh.position)
+    const mainLine = addLine(center, co.sunMesh.position, 0x4466aa, 0.15);
+    orbitLines.push({ line: mainLine, a: center, b: co.sunMesh.position });
 
-      const sameGroup = p.group && projList.find(pr => pr.id === connId)?.group === p.group;
-      const lineColor = sameGroup ? 0x6688ff : 0x4466aa;
-      const opacity = sameGroup ? 0.2 : 0.08;
-
-      const cpts = new THREE.QuadraticBezierCurve3(from, ctrl, to).getPoints(24);
-      const geo = new THREE.BufferGeometry().setFromPoints(cpts);
-      const mat = new THREE.LineBasicMaterial({
-        color: lineColor, transparent: true, opacity,
-        blending: THREE.AdditiveBlending, depthWrite: false,
-      });
-      const line = new THREE.Line(geo, mat);
-      lineGroup.add(line);
-      lineMeshes.push(line);
-      lineConnections.push({ line, fromMesh, toMesh, ctrl, sameGroup, opacity });
-      lineAnimData.push({ opacity, phase: Math.random() * Math.PI * 2, speed: 0.3 + Math.random() * 0.2 });
-
-      if (sameGroup) {
-        const dotMat = new THREE.PointsMaterial({
-          color: 0x88aaff, size: 0.05, transparent: true, opacity: 0.2,
-          blending: THREE.AdditiveBlending, depthWrite: false, sizeAttenuation: true,
-        });
-        const dp = new Float32Array(16 * 3);
-        const dg = new THREE.BufferGeometry();
-        dg.setAttribute('position', new THREE.Float32BufferAttribute(dp, 3));
-        const dots = new THREE.Points(dg, dotMat);
-        lineGroup.add(dots);
-        lineMeshes.push(dots);
-        lineConnections.push({ isDots: true, dots, fromMesh, toMesh, ctrl, offset: Math.random() });
-        lineAnimData.push({ opacity: 0.15, phase: Math.random() * Math.PI * 2, isDots: true, offset: Math.random() });
-      }
+    // Lines from constellation center to each planet (live refs)
+    co.planets.forEach(p => {
+      const innerLine = addLine(co.sunMesh.position, p.mesh.position, 0x6688ff, 0.12);
+      orbitLines.push({ line: innerLine, a: co.sunMesh.position, b: p.mesh.position });
     });
   });
 }
@@ -502,9 +431,9 @@ function setNebulaTheme(color) { nebulaTheme = color; }
 const nebulaShaderMat = new THREE.ShaderMaterial({
   uniforms: {
     uTime: { value: 0 },
-    uColor1: { value: new THREE.Color(0.12, 0.05, 0.25) },
-    uColor2: { value: new THREE.Color(0.25, 0.10, 0.45) },
-    uColor3: { value: new THREE.Color(0.08, 0.02, 0.15) },
+    uColor1: { value: new THREE.Color(0.03, 0.06, 0.20) },
+    uColor2: { value: new THREE.Color(0.08, 0.15, 0.35) },
+    uColor3: { value: new THREE.Color(0.02, 0.04, 0.12) },
     uOpacity: { value: 0.6 },
   },
   vertexShader: `
@@ -615,6 +544,7 @@ let isAnimating = false;
 let animTarget = null;
 let cameraOrigin = null;
 let targetControls = null;
+let constellationFocus = null;
 
 const raycaster = new THREE.Raycaster();
 const pointer = new THREE.Vector2();
@@ -629,6 +559,10 @@ function onPointerDown(event) {
   const intersects = raycaster.intersectObjects(meshes);
   if (intersects.length > 0) {
     const hit = intersects[0].object;
+    if (hit.userData.isConstellationCenter) {
+      travelToConstellation(hit.userData.constellationKey);
+      return;
+    }
     const id = hit.userData.projectId;
     if (id !== undefined) selectStar(id);
   }
@@ -667,10 +601,21 @@ function selectStar(id) {
   targetControls = { target: controls.target.clone() };
   triggerShootingStar();
 
-  const absp = getAbsolutePosition(project);
-  const tp = new THREE.Vector3(absp.x, absp.y, absp.z);
+  const mesh = starMeshes.find(m => m.userData.projectId === id);
+  const tp = mesh ? mesh.position.clone() : new THREE.Vector3(0, 0, 0);
   const dir = tp.clone().normalize();
   const ct = tp.clone().add(dir.multiplyScalar(3));
+
+  // Find owning constellation for close-to-constellation behavior
+  const owningCo = constellationOrbits.find(co =>
+    co.planets.some(p => p.mesh.userData.projectId === id)
+  );
+  if (owningCo) {
+    constellationFocus = {
+      key: owningCo.key,
+      position: owningCo.sunMesh.position.clone(),
+    };
+  }
 
   animTarget = {
     from: camera.position.clone(), to: ct,
@@ -712,11 +657,18 @@ function animateCamera(delta) {
 
   if (target.progress >= 1) {
     if (isTravel) {
+      if (travelTarget.constellationKey) {
+        constellationFocus = { key: travelTarget.constellationKey, position: travelTarget.focusPosition };
+      }
       travelTarget = null;
       if (warpParticles) { warpParticles.material.opacity = 0; warpParticles.userData.active = false; }
       const status = document.getElementById('travel-status');
       if (status) setTimeout(() => status.classList.remove('active'), 800);
+      setTimeout(() => {
+        controls.autoRotate = true;
+      }, 500);
     } else {
+      if (target._resetCenter) controls.target.set(0, 0, 0);
       animTarget = null;
       setTimeout(() => { controls.autoRotate = true }, 3000);
     }
@@ -728,66 +680,78 @@ function easeInOutCubic(t) { return t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2, 3)/
 
 function showProjectOverlay(project) {
   const overlay = document.getElementById('project-overlay');
-  document.getElementById('p-tag').textContent = project.tag;
-  document.getElementById('p-title').textContent = project.title;
-  document.getElementById('p-role').textContent = project.role || '';
-  document.getElementById('p-desc').textContent = project.desc;
+  if (!overlay) return;
+  const pTag = document.getElementById('p-tag');
+  const pTitle = document.getElementById('p-title');
+  const pRole = document.getElementById('p-role');
+  const pDesc = document.getElementById('p-desc');
   const tc = document.getElementById('p-tech');
-  tc.innerHTML = '';
-  project.tech.forEach(t => {
-    const s = document.createElement('span');
-    s.textContent = t;
-    tc.appendChild(s);
-  });
   const lc = document.getElementById('p-links');
-  lc.innerHTML = '';
-  if (project.links.github) {
-    const a = document.createElement('a');
-    a.href = project.links.github; a.target = '_blank'; a.className = 'btn-primary';
-    a.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg> GitHub';
-    lc.appendChild(a);
-  }
-  if (project.links.demo) {
-    const a = document.createElement('a');
-    a.href = project.links.demo; a.target = '_blank'; a.className = 'btn-secondary';
-    a.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg> Demo';
-    lc.appendChild(a);
-  }
   const qrSection = document.getElementById('p-qr');
-  const qrImg = document.getElementById('qr-img');
-  if (project.isCenter) {
-    qrSection.style.display = 'flex';
-    qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=${encodeURIComponent(project.links.github || 'https://github.com/brunocsilva41')}`;
-    qrImg.alt = 'QR Code GitHub';
-  } else {
-    qrSection.style.display = 'none';
+  if (pTag) pTag.textContent = project.tag;
+  if (pTitle) pTitle.textContent = project.title;
+  if (pRole) pRole.textContent = project.role || '';
+  if (pDesc) pDesc.textContent = project.desc;
+  if (tc) {
+    tc.innerHTML = '';
+    project.tech.forEach(t => {
+      const s = document.createElement('span');
+      s.textContent = t;
+      tc.appendChild(s);
+    });
+  }
+  if (lc) {
+    lc.innerHTML = '';
+    if (project.links.github) {
+      const a = document.createElement('a');
+      a.href = project.links.github; a.target = '_blank'; a.className = 'btn-primary';
+      a.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg> GitHub';
+      lc.appendChild(a);
+    }
+    if (project.links.demo) {
+      const a = document.createElement('a');
+      a.href = project.links.demo; a.target = '_blank'; a.className = 'btn-secondary';
+      a.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg> Demo';
+      lc.appendChild(a);
+    }
+  }
+  if (qrSection) {
+    if (project.isCenter) {
+      qrSection.style.display = 'block';
+      const qrImg = document.getElementById('qr-img');
+      if (qrImg) qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent('https://github.com/brunocsilva41')}`;
+    } else {
+      qrSection.style.display = 'none';
+    }
   }
   overlay.classList.add('active');
 }
 
 function hideProjectOverlay() {
-  document.getElementById('project-overlay').classList.remove('active');
+  document.getElementById('project-overlay')?.classList.remove('active');
 }
 
-document.getElementById('close-btn').addEventListener('click', () => {
+document.getElementById('close-btn')?.addEventListener('click', () => {
   if (isAnimating) return;
   isAnimating = true;
   hideProjectOverlay();
-  const project = projects.find(p => p.id === selectedStar);
-  if (project && cameraOrigin) {
-    animTarget = {
-      from: camera.position.clone(), to: cameraOrigin,
-      targetFrom: controls.target.clone(), targetTo: targetControls?.target || new THREE.Vector3(0,0,0),
-      progress: 0, duration: 0.8,
-    };
-    setTimeout(() => {
-      controls.enabled = true; selectedStar = null;
-      setTimeout(() => { controls.autoRotate = true }, 3000);
-    }, 800);
+  let origin, targetTo;
+  if (constellationFocus) {
+    origin = constellationFocus.position;
+    targetTo = new THREE.Vector3(0, 0, 0);
   } else {
-    controls.enabled = true; selectedStar = null; isAnimating = false;
-    setTimeout(() => { controls.autoRotate = true }, 3000);
+    origin = cameraOrigin || new THREE.Vector3(0, 8, 0.1);
+    targetTo = new THREE.Vector3(0, 0, 0);
   }
+  animTarget = {
+    from: camera.position.clone(), to: origin,
+    targetFrom: controls.target.clone(), targetTo,
+    progress: 0, duration: 0.8, _resetCenter: true,
+  };
+  setTimeout(() => {
+    controls.enabled = true; selectedStar = null; cameraOrigin = null;
+    setTimeout(() => { controls.autoRotate = true }, 3000);
+  }, 800);
 });
 
 function showToast(msg) {
@@ -802,8 +766,8 @@ function showToast(msg) {
 document.getElementById('delete-btn')?.addEventListener('click', () => {
   if (isAnimating || selectedStar === null) return;
   const project = projects.find(p => p.id === selectedStar);
-  if (!project || project.isCenter) {
-    showToast('Nao é possivel remover a estrela central');
+  if (!project) {
+    showToast('Projeto não encontrado');
     return;
   }
   projects = projects.filter(p => p.id !== selectedStar);
@@ -826,83 +790,43 @@ document.getElementById('reset-btn')?.addEventListener('click', () => {
 
 function animateStars(time) {
   starMeshes.forEach(m => {
-    if (m.userData.isRing) {
-      m.rotation.z += 0.004; m.rotation.x += 0.002; return;
-    }
     const ph = m.userData.phase || 0;
     const pulse = 0.9 + 0.1 * Math.sin(time * 0.8 + ph);
-    if (!m.userData.isCenter && !m.userData.isGroupSun) m.scale.set(pulse, pulse, pulse);
+    if (!m.userData.isGroupSun) m.scale.set(pulse, pulse, pulse);
     m.rotation.y += 0.003;
 
     if (m.userData.orbit) {
       const o = m.userData.orbit;
       o.angle += 0.004 * o.speed;
-      const cosa = Math.cos(o.angle) * o.dist;
-      const sina = Math.sin(o.angle) * o.dist;
-      _orbitRight.copy(o.ringRight).multiplyScalar(cosa);
-      _orbitNormal.copy(o.ringNormal).multiplyScalar(sina);
-      _orbitPos.copy(o.center).add(_orbitRight).add(_orbitNormal);
-      m.position.copy(_orbitPos);
-      if (m.userData.glow) m.userData.glow.position.copy(m.position);
+      const nx = o.center.x + Math.cos(o.angle) * o.dist;
+      const ny = o.center.y;
+      const nz = o.center.z + Math.sin(o.angle) * o.dist;
+      m.position.set(nx, ny, nz);
+      if (m.userData.glow) m.userData.glow.position.set(nx, ny, nz);
       if (m.userData.label) {
-        const lo = m.userData.isCenter ? 0.9 : 0.55;
-        const rad = m.userData.isCenter ? 0.5 : (0.18 + (m.userData.techCount || 3) * 0.035);
-        m.userData.label.position.set(m.position.x, m.position.y - rad - lo, m.position.z);
+        const rad = m.userData.radius || 0.3;
+        m.userData.label.position.set(nx, ny - rad - 0.55, nz);
       }
     }
-  });
-  haloGroup.children.forEach(c => {
-    if (c.userData?.isOrbit) c.rotation.y += c.userData.speed * 0.01;
   });
   glowSprites.forEach(s => {
     const m = s.userData.parentMesh;
     if (!m) return;
     const ph = m.userData.phase || 0;
     const pulse = 0.8 + 0.2 * Math.sin(time * 0.7 + ph);
-    const bs = s.userData.isCenter ? 6 : 2.5;
-    s.scale.set(bs * pulse, bs * pulse, 1);
-    s.material.opacity = s.userData.isCenter ? 0.5 : (0.18 + 0.08 * Math.sin(time * 0.6 + ph));
+    s.scale.set(2.5 * pulse, 2.5 * pulse, 1);
+    s.material.opacity = 0.18 + 0.08 * Math.sin(time * 0.6 + ph);
   });
 }
 
 function animateLines(time) {
-  for (let i = 0; i < lineConnections.length; i++) {
-    const conn = lineConnections[i];
-    const anim = lineAnimData[i];
-    if (!conn || !anim) continue;
-
-    const from = conn.fromMesh?.position;
-    const to = conn.toMesh?.position;
-    if (!from || !to) continue;
-
-    if (conn.isDots && conn.dots) {
-      const flow = (time * 0.3 + conn.offset) % 1;
-      const pos = conn.dots.geometry.attributes.position.array;
-      const cnt = pos.length / 3;
-      const mid = from.clone().add(to).multiplyScalar(0.5);
-      const norm = mid.clone().normalize().multiplyScalar(0.3);
-      const ctrl = mid.clone().add(norm);
-      const curve = new THREE.QuadraticBezierCurve3(from.clone(), ctrl, to.clone());
-      for (let j = 0; j < cnt; j++) {
-        const t = ((j / cnt) + flow) % 1;
-        const pt = curve.getPoint(t);
-        pos[j*3] = pt.x; pos[j*3+1] = pt.y; pos[j*3+2] = pt.z;
-      }
-      conn.dots.geometry.attributes.position.needsUpdate = true;
-      conn.dots.material.opacity = 0.06 + 0.06 * Math.sin(time * 0.5 + anim.phase);
-    } else if (conn.line) {
-      const mid = from.clone().add(to).multiplyScalar(0.5);
-      const norm = mid.clone().normalize().multiplyScalar(0.3);
-      const ctrl = mid.clone().add(norm);
-      const cpts = new THREE.QuadraticBezierCurve3(from.clone(), ctrl, to.clone()).getPoints(24);
-      const pos = conn.line.geometry.attributes.position.array;
-      for (let j = 0; j < cpts.length && j * 3 + 2 < pos.length; j++) {
-        pos[j*3] = cpts[j].x; pos[j*3+1] = cpts[j].y; pos[j*3+2] = cpts[j].z;
-      }
-      conn.line.geometry.attributes.position.needsUpdate = true;
-      conn.line.material.opacity = anim.opacity * (0.6 + 0.4 * Math.sin(time * 0.3 + anim.phase));
-    }
-  }
+  orbitLines.forEach((ol, i) => {
+    const pos = ol.line.geometry.attributes.position.array;
+    pos[0] = ol.a.x; pos[1] = ol.a.y; pos[2] = ol.a.z;
+    pos[3] = ol.b.x; pos[4] = ol.b.y; pos[5] = ol.b.z;
+    ol.line.geometry.attributes.position.needsUpdate = true;
+    ol.line.material.opacity = 0.08 + 0.04 * Math.sin(time * 0.3 + i);
+  });
 }
 
 function animateShootingStars(time, delta) {
@@ -943,15 +867,17 @@ function rebuildConstellation() {
   if (isAnimating) return;
   hideProjectOverlay();
   selectedStar = null; cameraOrigin = null; animTarget = null; isAnimating = false;
-  camera.position.set(0, 2, 18);
+  constellationFocus = null;
+  camera.position.set(0, 8, 0.1);
   controls.target.set(0, 0, 0);
   controls.autoRotate = true;
   controls.update();
   buildScene(currentView);
 }
 
-setupImportUI((newProject) => {
-  projects.push(newProject);
+setupImportUI((newProjects) => {
+  const list = Array.isArray(newProjects) ? newProjects : [newProjects];
+  list.forEach(p => projects.push(p));
   projects = autoConnectProjects(projects);
   saveProjects(projects);
   rebuildConstellation();
@@ -980,7 +906,8 @@ document.getElementById('overview-btn')?.addEventListener('click', () => {
   if (isAnimating) return;
   isAnimating = true;
   controls.autoRotate = false;
-  const overviewTarget = new THREE.Vector3(0, 1, 22);
+  constellationFocus = null;
+  const overviewTarget = new THREE.Vector3(0, 8, 0.1);
   travelTarget = {
     from: camera.position.clone(), to: overviewTarget,
     targetFrom: controls.target.clone(), targetTo: new THREE.Vector3(0, 0, 0),
@@ -999,6 +926,7 @@ document.getElementById('view-btn')?.addEventListener('click', () => {
 });
 
 buildScene('projects');
+updateNavButtons('projects');
 setTimeout(() => { controls.autoRotate = true }, 2000);
 
 const loadingText = 'INICIALIZANDO CONSTELAÇÃO...';
@@ -1079,7 +1007,8 @@ let travelTarget = null;
 function travelToConstellation(group) {
   if (isAnimating && !animTarget && !travelTarget) isAnimating = false;
   if (isAnimating || !group) return;
-  if (!groupCenters[group]) return;
+  const co = constellationOrbits.find(c => c.key === group);
+  if (!co) return;
   isAnimating = true;
   controls.autoRotate = false;
   hideProjectOverlay();
@@ -1089,9 +1018,9 @@ function travelToConstellation(group) {
   const activeBtn = document.querySelector(`.nav-star[data-group="${group}"]`);
   activeBtn?.classList.add('active');
 
-  const gc = groupCenters[group];
-  const dist = 4 + Math.sqrt(gc.x**2 + gc.y**2 + gc.z**2) * 0.3;
-  const targetPos = new THREE.Vector3(gc.x, gc.y, gc.z + dist);
+  const gc = co.sunMesh.position;
+  const dist = 4 + Math.sqrt(gc.x**2 + gc.z**2) * 0.3;
+  const targetPos = new THREE.Vector3(gc.x, gc.y + dist, gc.z);
   const targetLook = new THREE.Vector3(gc.x, gc.y, gc.z);
   const from = camera.position.clone();
   const fromTarget = controls.target.clone();
@@ -1101,6 +1030,8 @@ function travelToConstellation(group) {
     from, to: targetPos,
     targetFrom: fromTarget, targetTo: targetLook,
     progress: 0, duration: Math.min(duration, 3.5), group,
+    constellationKey: group,
+    focusPosition: gc.clone(),
   };
 
   const status = document.getElementById('travel-status');
@@ -1124,6 +1055,17 @@ function travelToConstellation(group) {
 let lastTime = performance.now();
 let totalTime = 0;
 
+let lastLabelUpdate = 0;
+function updateLabelScales(now) {
+    if (now - lastLabelUpdate < 150) return;
+    lastLabelUpdate = now;
+    const dist = camera.position.length();
+    const scale = Math.max(0.5, Math.min(1.8, 14 / dist));
+    labelObjects.forEach(obj => {
+      obj.element.style.fontSize = (10 * scale) + 'px';
+    });
+  }
+
 function animate() {
   requestAnimationFrame(animate);
   const now = performance.now();
@@ -1140,6 +1082,7 @@ function animate() {
   animateBg(totalTime, delta);
   animateShootingStars(totalTime, delta);
   if (animTarget || travelTarget) animateCamera(delta);
+  updateLabelScales(totalTime);
   controls.update();
   composer.render();
   labelRenderer.render(scene, camera);
