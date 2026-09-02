@@ -28,6 +28,7 @@ html, body {
   position: fixed; top: 0; left: 0; width: 100%; height: 100%;
   z-index: -1;
   background: linear-gradient(160deg, #070914 0%, #0d1129 40%, #11163d 70%, #0a0c1a 100%);
+  opacity: 0.42;
 }
 
 #stars-bg::before {
@@ -75,6 +76,7 @@ html, body {
     radial-gradient(1px 1px at 3% 30%, rgba(200,215,255,0.4), transparent),
     radial-gradient(1px 1px at 7% 85%, rgba(255,255,255,0.7), transparent);
   animation: star-scint 4s ease-in-out infinite alternate;
+  opacity: 0.72;
 }
 
 @keyframes star-scint {
@@ -128,21 +130,31 @@ html, body {
     radial-gradient(0.5px 0.5px at 94% 55%, rgba(200,215,255,0.5), transparent);
   animation: star-scint 5s ease-in-out infinite alternate;
   animation-delay: -2s;
+  opacity: 0.42;
 }
 
 #nebula-bg {
   position: fixed; top: 0; left: 0; width: 100%; height: 100%;
   z-index: 1; pointer-events: none;
   background:
-    radial-gradient(ellipse 60% 40% at 20% 30%, rgba(60, 80, 200, 0.06) 0%, transparent 60%),
-    radial-gradient(ellipse 50% 50% at 80% 70%, rgba(120, 60, 200, 0.05) 0%, transparent 60%),
-    radial-gradient(ellipse 40% 30% at 50% 20%, rgba(80, 200, 180, 0.04) 0%, transparent 50%);
+    radial-gradient(circle at 50% 48%, rgba(108, 140, 255, 0.08) 0%, rgba(108, 140, 255, 0.03) 20%, transparent 55%),
+    radial-gradient(circle at 18% 28%, rgba(80, 227, 194, 0.06) 0%, transparent 32%),
+    radial-gradient(circle at 82% 72%, rgba(167, 139, 250, 0.05) 0%, transparent 34%),
+    linear-gradient(180deg, rgba(7, 9, 20, 0.15) 0%, rgba(7, 9, 20, 0.35) 100%);
   animation: nebula-pulse 15s ease-in-out infinite alternate;
+  opacity: 0.35;
 }
 
 @keyframes nebula-pulse {
-  0% { opacity: 0.6; transform: scale(1); }
-  100% { opacity: 1; transform: scale(1.05); }
+  0% { opacity: 0.55; transform: scale(1); }
+  100% { opacity: 0.85; transform: scale(1.02); }
+}
+
+#stars-bg,
+#stars-bg::before,
+#stars-bg::after,
+#nebula-bg {
+  background-attachment: fixed;
 }
 
 /* ── Loading Screen ── */
@@ -879,9 +891,9 @@ canvas {
   transform: translate(-50%, -50%);
   z-index: 25;
   font-family: var(--font-mono);
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 700;
-  letter-spacing: 6px;
+  letter-spacing: 4px;
   text-transform: uppercase;
   color: rgba(200, 215, 255, 0.08);
   pointer-events: none;
@@ -899,7 +911,7 @@ canvas {
 /* ── Group Labels (CSS2D) ── */
 .star-label {
   font-family: var(--font);
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 500;
   letter-spacing: 1px;
   color: rgba(200, 215, 255, 0.6);
@@ -908,14 +920,14 @@ canvas {
   text-shadow: 0 0 12px rgba(0,0,0,0.95), 0 0 4px rgba(0,0,0,0.8);
   transition: opacity 0.3s;
   white-space: nowrap;
-  padding: 3px 10px;
-  background: rgba(0,0,0,0.25);
+  padding: 3px 8px;
+  background: rgba(0,0,0,0.18);
   border-radius: 4px;
   backdrop-filter: blur(2px);
   border: 1px solid rgba(200,215,255,0.06);
 }
 .star-label.center-label {
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 600;
   letter-spacing: 2px;
   color: rgba(255,255,255,0.7);
@@ -997,4 +1009,42 @@ canvas {
   #project-card { padding: 32px 24px; }
   #project-card h2 { font-size: 22px; }
   #import-container { padding: 28px 20px; }
+}
+
+/* ── Overlay: grupo e detalhes de case study ── */
+#project-card .project-group-tag {
+  margin-left: 6px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(200, 215, 255, 0.1);
+}
+#p-case .space-cs-section { margin-bottom: 20px; }
+#p-case .space-cs-section h4 {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: #f97373; margin-bottom: 8px;
+}
+#p-case .space-cs-section p {
+  font-size: 13px; line-height: 1.7;
+  color: rgba(200, 215, 255, 0.6);
+}
+#p-case .space-cs-section ul {
+  list-style: none; display: flex; flex-direction: column; gap: 6px;
+  padding: 0; margin: 0;
+}
+#p-case .space-cs-section ul li {
+  position: relative; padding-left: 16px;
+  font-size: 13px; line-height: 1.6;
+  color: rgba(200, 215, 255, 0.6);
+}
+#p-case .space-cs-section ul li::before {
+  content: ''; position: absolute; left: 0; top: 8px;
+  width: 5px; height: 5px; border-radius: 50%;
+  background: #f97373; opacity: 0.6;
+}
+#p-case .space-cs-note {
+  font-size: 11px; font-style: italic;
+  color: rgba(200, 215, 255, 0.3);
+  border-top: 1px solid rgba(200, 215, 255, 0.08);
+  padding-top: 12px; margin-bottom: 20px;
 }

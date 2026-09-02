@@ -1,4 +1,4 @@
-import { fetchRepoFromGitHub, compileProject } from './projects.js'
+import { fetchRepoFromGitHub, compileProject } from '../data/github.js'
 
 let onImportCallback = null
 let currentPreview = null

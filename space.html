@@ -55,77 +55,6 @@
           <button id="theme-btn" title="Tema nebulosa">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
           </button>
-          <button id="reset-btn" title="Resetar constelação">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
-          </button>
-          <button id="import-btn" title="Importar projeto do GitHub">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <div id="import-modal">
-      <div id="import-backdrop"></div>
-      <div id="import-container">
-        <button id="import-close">&times;</button>
-
-        <!-- Tab bar -->
-        <div id="import-tabs">
-          <button class="import-tab active" data-tab="url">URL</button>
-          <button class="import-tab" data-tab="list">Listar Reposit&oacute;rios</button>
-        </div>
-
-        <!-- URL Import Tab -->
-        <div id="import-tab-url" class="import-tab-content">
-          <h2>Importar por URL</h2>
-          <p class="import-sub">Cole a URL do reposit&oacute;rio para importar automaticamente</p>
-          <form id="import-form">
-            <div class="import-input-wrap">
-              <input type="url" id="import-url" placeholder="https://github.com/usuario/repositorio" required />
-              <button type="submit">Buscar</button>
-            </div>
-          </form>
-          <div id="import-status"></div>
-          <div id="import-preview">
-            <div class="preview-header">
-              <span class="preview-tag" id="preview-tag"></span>
-              <h3 id="preview-title" class="preview-title"></h3>
-              <div class="preview-role" id="preview-role"></div>
-            </div>
-            <p id="preview-desc" class="preview-desc"></p>
-            <div class="preview-techs" id="preview-techs"></div>
-            <a id="preview-link" class="preview-link" target="_blank"></a>
-          </div>
-          <button id="import-confirm" style="display:none">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
-            Adicionar &agrave; Constela&ccedil;&atilde;o
-          </button>
-        </div>
-
-        <!-- Repo List Tab -->
-        <div id="import-tab-list" class="import-tab-content" style="display:none">
-          <h2>Selecionar Reposit&oacute;rios</h2>
-          <p class="import-sub">Escolha os reposit&oacute;rios para adicionar &agrave; constela&ccedil;&atilde;o</p>
-          <button id="repo-load-btn" class="repo-load-btn">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 0 1-9 9m9-9a9 9 0 0 0-9-9m9 9H3m9 9a9 9 0 0 1-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 0 1 9-9"/></svg>
-            Carregar Reposit&oacute;rios do GitHub
-          </button>
-          <div id="repo-list-status"></div>
-          <div id="repo-list-container" style="display:none">
-            <div id="repo-list-header">
-              <label class="repo-select-all">
-                <input type="checkbox" id="repo-select-all" />
-                <span>Selecionar Todos</span>
-              </label>
-              <span id="repo-count"></span>
-            </div>
-            <div id="repo-list"></div>
-            <button id="repo-import-btn" class="repo-import-btn" disabled>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
-              Importar Selecionados (<span id="repo-selected-count">0</span>)
-            </button>
-          </div>
         </div>
       </div>
     </div>
@@ -135,24 +64,22 @@
       <div id="project-card">
         <button class="close-btn" id="close-btn">&times;</button>
         <div class="tag" id="p-tag"></div>
+        <div class="tag project-group-tag" id="p-group"></div>
         <h2 id="p-title"></h2>
         <div class="project-role" id="p-role"></div>
         <div class="project-desc" id="p-desc"></div>
+        <div id="p-case"></div>
         <div class="tech-stack" id="p-tech"></div>
         <div class="project-links" id="p-links"></div>
         <div id="p-qr" class="qr-section" style="display:none">
           <img id="qr-img" src="" alt="QR Code" />
         </div>
-        <button id="delete-btn" class="delete-btn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-          Remover da constela&ccedil;&atilde;o
-        </button>
       </div>
     </div>
 
     <div id="travel-status"></div>
     <div id="toast"></div>
 
-    <script type="module" src="/src/main.js"></script>
+    <script type="module" src="/src/space/space-main.js"></script>
   </body>
 </html>
