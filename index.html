@@ -4,7 +4,13 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Bruno Silva | Full-Stack Developer</title>
+    <meta name="description" content="Portfólio de Bruno Silva, Software Engineer. Sistemas fiscais (NF-e/NFS-e/CT-e), agentes de IA, jogos multiplayer em tempo real e integrações com ERPs." />
+    <meta name="theme-color" content="#070914" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Bruno Silva | Software Engineer" />
+    <meta property="og:description" content="Sistemas fiscais, agentes de IA, jogos multiplayer e integrações com ERPs. Explore os projetos em uma constelação 3D interativa." />
+    <meta property="og:locale" content="pt_BR" />
+    <title>Bruno Silva | Software Engineer</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="/src/styles/site.css" />
   </head>
@@ -15,15 +21,19 @@
     <nav id="navbar">
       <div class="nav-brand">Bruno Silva</div>
       <div class="nav-links">
-        <a href="#about" class="nav-link">Sobre</a>
-        <a href="#skills" class="nav-link">Skills</a>
-        <a href="#projects" class="nav-link">Projetos</a>
-        <a href="#contact" class="nav-link">Contato</a>
+        <a href="#about" class="nav-link" data-i18n="nav.about">Sobre</a>
+        <a href="#experience" class="nav-link" data-i18n="nav.experience">Experi&ecirc;ncia</a>
+        <a href="#projects" class="nav-link" data-i18n="nav.projects">Projetos</a>
+        <a href="#contact" class="nav-link" data-i18n="nav.contact">Contato</a>
+        <div class="lang-toggle">
+          <button type="button" data-lang="pt">PT</button>
+          <button type="button" data-lang="en">EN</button>
+        </div>
         <a href="/space.html" class="nav-space-btn">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
           </svg>
-          Vis&atilde;o Espacial
+          <span data-i18n="nav.space">Vis&atilde;o Espacial</span>
         </a>
       </div>
     </nav>
@@ -31,57 +41,72 @@
     <div id="profile-view">
       <section id="hero-section" class="port-section">
         <div class="hero-content">
-          <p class="hero-greeting">Ol&aacute;, eu sou</p>
+          <span class="hero-availability"><span class="availability-dot"></span><span data-i18n="hero.available">Dispon&iacute;vel para projetos</span></span>
+          <p class="hero-greeting" data-i18n="hero.greeting">Ol&aacute;, eu sou</p>
           <h1 class="hero-name"><span class="gradient-text">Bruno Silva</span></h1>
-          <p class="hero-subtitle">Full-Stack Developer &amp; Software Engineer</p>
-          <p class="hero-tagline">Engenheiro de software focado em criar solu&ccedil;&otilde;es escal&aacute;veis. Transformo ideias em experi&ecirc;ncias digitais impactantes com tecnologia de ponta.</p>
+          <p class="hero-subtitle" data-i18n="hero.subtitle">Software Engineer | Sistemas Fiscais &middot; IA &middot; Multiplayer</p>
+          <p class="hero-tagline" data-i18n="hero.tagline">Engenheiro de software focado em resolver problemas reais.</p>
           <div class="hero-buttons">
-            <a href="#projects" class="cta-primary">Ver Projetos</a>
+            <a href="#projects" class="cta-primary" data-i18n="hero.cta.projects">Ver Projetos</a>
             <a href="/space.html" class="cta-space">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
               </svg>
-              Vis&atilde;o Espacial
+              <span data-i18n="hero.cta.space">Vis&atilde;o Espacial</span>
             </a>
+          </div>
+          <div class="stats-strip">
+            <div class="stat-item"><span class="stat-number" id="stat-years">5+</span><span class="stat-label" data-i18n="stats.years">Anos em tecnologia</span></div>
+            <div class="stat-item"><span class="stat-number" id="stat-projects">15</span><span class="stat-label" data-i18n="stats.projects">Projetos reais</span></div>
+            <div class="stat-item"><span class="stat-number" id="stat-techs">30+</span><span class="stat-label" data-i18n="stats.techs">Tecnologias</span></div>
+            <div class="stat-item"><span class="stat-number" id="stat-cases">2</span><span class="stat-label" data-i18n="stats.cases">Case studies</span></div>
           </div>
         </div>
       </section>
 
       <section id="about" class="port-section">
-        <h2 class="section-title">Sobre</h2>
+        <h2 class="section-title" data-i18n="section.about">Sobre</h2>
         <div class="about-content">
-          <p>Engenheiro de software focado em criar solu&ccedil;&otilde;es escal&aacute;veis. Experi&ecirc;ncia em TypeScript, React, Node.js, Go e arquiteturas distribu&iacute;das. Cada estrela da minha constela&ccedil;&atilde;o de projetos representa um desafio t&eacute;cnico real que enfrentei e superei, desde jogos multiplayer com engine determin&iacute;stica at&eacute; sistemas de integra&ccedil;&atilde;o fiscal e agentes de IA.</p>
-          <p class="about-cta">Explore meus projetos abaixo ou entre na <a href="/space.html">vis&atilde;o espacial</a> para uma experi&ecirc;ncia interativa em 3D.</p>
+          <p data-i18n="about.p1"></p>
+          <p class="about-cta" data-i18n="about.p2"></p>
         </div>
       </section>
 
+      <section id="experience" class="port-section">
+        <h2 class="section-title" data-i18n="section.experience">Experi&ecirc;ncia</h2>
+        <div class="timeline" id="experience-timeline"></div>
+      </section>
+
       <section id="skills" class="port-section">
-        <h2 class="section-title">Skills</h2>
+        <h2 class="section-title" data-i18n="section.skills">Skills</h2>
         <div class="skills-categories">
           <div class="skills-category">
-            <h3 class="skills-cat-title" style="color: var(--accent-blue)">Frontend</h3>
+            <h3 class="skills-cat-title" style="color: var(--accent-blue)" data-i18n="skills.frontend">Frontend</h3>
             <div class="skills-grid">
               <div class="skill-card"><span class="skill-name">TypeScript</span></div>
               <div class="skill-card"><span class="skill-name">React</span></div>
               <div class="skill-card"><span class="skill-name">Next.js</span></div>
-              <div class="skill-card"><span class="skill-name">CSS</span></div>
+              <div class="skill-card"><span class="skill-name">React Native</span></div>
+              <div class="skill-card"><span class="skill-name">Tailwind CSS</span></div>
               <div class="skill-card"><span class="skill-name">Three.js</span></div>
             </div>
           </div>
           <div class="skills-category">
-            <h3 class="skills-cat-title" style="color: var(--accent-green)">Backend</h3>
+            <h3 class="skills-cat-title" style="color: var(--accent-green)" data-i18n="skills.backend">Backend</h3>
             <div class="skills-grid">
               <div class="skill-card"><span class="skill-name">Node.js</span></div>
+              <div class="skill-card"><span class="skill-name">Fastify</span></div>
               <div class="skill-card"><span class="skill-name">NestJS</span></div>
               <div class="skill-card"><span class="skill-name">Go</span></div>
-              <div class="skill-card"><span class="skill-name">Express</span></div>
-              <div class="skill-card"><span class="skill-name">Python</span></div>
+              <div class="skill-card"><span class="skill-name">Laravel</span></div>
+              <div class="skill-card"><span class="skill-name">.NET</span></div>
             </div>
           </div>
           <div class="skills-category">
-            <h3 class="skills-cat-title" style="color: var(--accent-purple)">Database & Infra</h3>
+            <h3 class="skills-cat-title" style="color: var(--accent-purple)" data-i18n="skills.infra">Bancos &amp; Infra</h3>
             <div class="skills-grid">
               <div class="skill-card"><span class="skill-name">PostgreSQL</span></div>
+              <div class="skill-card"><span class="skill-name">MySQL</span></div>
               <div class="skill-card"><span class="skill-name">Redis</span></div>
               <div class="skill-card"><span class="skill-name">Docker</span></div>
               <div class="skill-card"><span class="skill-name">Kubernetes</span></div>
@@ -89,25 +114,53 @@
             </div>
           </div>
           <div class="skills-category">
-            <h3 class="skills-cat-title" style="color: #ffd76b">Tools & AI</h3>
+            <h3 class="skills-cat-title" style="color: #ffd76b" data-i18n="skills.tools">Ferramentas &amp; IA</h3>
             <div class="skills-grid">
-              <div class="skill-card"><span class="skill-name">Git</span></div>
-              <div class="skill-card"><span class="skill-name">MCP</span></div>
               <div class="skill-card"><span class="skill-name">GitHub Actions</span></div>
-              <div class="skill-card"><span class="skill-name">Prisma</span></div>
-              <div class="skill-card"><span class="skill-name">BullMQ</span></div>
+              <div class="skill-card"><span class="skill-name">Playwright</span></div>
+              <div class="skill-card"><span class="skill-name">Elasticsearch</span></div>
+              <div class="skill-card"><span class="skill-name">RabbitMQ</span></div>
+              <div class="skill-card"><span class="skill-name">LangChain</span></div>
+              <div class="skill-card"><span class="skill-name">MCP</span></div>
             </div>
           </div>
         </div>
       </section>
 
+      <section id="case-studies" class="port-section">
+        <h2 class="section-title" data-i18n="section.cases">Case Studies</h2>
+        <div class="cs-highlight-grid" id="case-study-cards"></div>
+      </section>
+
       <section id="projects" class="port-section">
-        <h2 class="section-title">Projetos em Destaque</h2>
+        <h2 class="section-title" data-i18n="section.projects">Projetos em Destaque</h2>
         <div class="projects-grid" id="project-cards"></div>
       </section>
 
+      <section id="how-i-work" class="port-section">
+        <h2 class="section-title" data-i18n="section.how">Como eu trabalho</h2>
+        <div class="how-grid">
+          <div class="how-card">
+            <h3 class="how-title" data-i18n="how.quality.title">Qualidade com testes</h3>
+            <p class="how-desc" data-i18n="how.quality.desc"></p>
+          </div>
+          <div class="how-card">
+            <h3 class="how-title" data-i18n="how.cicd.title">CI/CD desde o in&iacute;cio</h3>
+            <p class="how-desc" data-i18n="how.cicd.desc"></p>
+          </div>
+          <div class="how-card">
+            <h3 class="how-title" data-i18n="how.security.title">Seguran&ccedil;a em primeiro lugar</h3>
+            <p class="how-desc" data-i18n="how.security.desc"></p>
+          </div>
+          <div class="how-card">
+            <h3 class="how-title" data-i18n="how.ai.title">IA com rigor</h3>
+            <p class="how-desc" data-i18n="how.ai.desc"></p>
+          </div>
+        </div>
+      </section>
+
       <section id="contact" class="port-section">
-        <h2 class="section-title">Contato</h2>
+        <h2 class="section-title" data-i18n="section.contact">Contato</h2>
         <div class="contact-links">
           <a href="mailto:brunocesar.social@gmail.com" class="contact-link" target="_blank">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
@@ -129,117 +182,24 @@
       </section>
 
       <footer id="footer">
-        <p>&copy; 2026 Bruno Silva. Todos os direitos reservados.</p>
+        <p data-i18n="footer.rights">&copy; 2026 Bruno Silva. Todos os direitos reservados.</p>
       </footer>
     </div>
     <div id="project-modal">
-      <div class="modal-backdrop" onclick="closeProjectModal()"></div>
+      <div class="modal-backdrop"></div>
       <div class="modal-card">
-        <button class="modal-close" onclick="closeProjectModal()">&times;</button>
-        <div class="modal-tag" id="modal-tag"></div>
-        <h3 class="modal-title" id="modal-title"></h3>
-        <div class="modal-role" id="modal-role"></div>
+        <div class="modal-header">
+          <button class="modal-close">&times;</button>
+          <div class="modal-tag" id="modal-tag"></div>
+          <h3 class="modal-title" id="modal-title"></h3>
+          <div class="modal-role" id="modal-role"></div>
+        </div>
         <p class="modal-desc" id="modal-desc"></p>
         <div class="modal-techs" id="modal-techs"></div>
         <div class="modal-links" id="modal-links"></div>
       </div>
     </div>
 
-    <script>
-      const projectData = [
-        { tag: 'E-commerce', title: 'Caf\u00e9 Gourmet', role: 'Full-Stack Developer',
-          desc: 'Plataforma completa de e-commerce para cafeteria artesanal. Frontend em React com cat\u00e1logo de produtos, carrinho de compras e checkout integrado. API REST pr\u00f3pria com Node.js e Express para gest\u00e3o de pedidos, produtos e autentica\u00e7\u00e3o. Deploy cont\u00ednuo na Vercel com pipeline automatizado.',
-          tech: ['React', 'Node.js', 'Express', 'CSS', 'JavaScript'],
-          color: '#f9a873', github: 'https://github.com/brunocsilva41/cafe-gourmet-react', demo: 'https://coffeforyou.netlify.app' },
-        { tag: 'Full-Stack', title: 'Casamento', role: 'Full-Stack Developer',
-          desc: 'Sistema completo de gerenciamento de cerim\u00f4nia. Site elegante com contagem regressiva, confirma\u00e7\u00e3o de presen\u00e7a e lista de presentes. API REST em NestJS com PostgreSQL para gest\u00e3o de convidados e confirma\u00e7\u00f5es em tempo real. Experi\u00eancia responsiva e fluida.',
-          tech: ['React', 'NestJS', 'PostgreSQL', 'TypeScript', 'CSS'],
-          color: '#6dd5ed', github: 'https://github.com/brunocsilva41/Casamento_FrontEnd', demo: 'https://casamento-front-end.vercel.app' },
-        { tag: 'DevOps', title: 'Ferramentas DevOps', role: 'DevOps Engineer',
-          desc: 'Pipeline de deploy automatizado para sistemas fiscais alem\u00e3es com C# e PowerShell. Middleware de integra\u00e7\u00e3o com sistemas legados em TypeScript. Servidor MCP seguro para LLMs acessarem bancos MySQL/MSSQL com valida\u00e7\u00e3o multi-est\u00e1gio e sandbox de queries.',
-          tech: ['Docker', 'TypeScript', 'PowerShell', 'C#', 'MCP', 'Node.js'],
-          color: '#50e3c2', github: 'https://github.com/brunocsilva41/SteuerDeployment' },
-        { tag: 'IA', title: 'AI & Automa\u00e7\u00e3o', role: 'AI Engineer',
-          desc: 'Automa\u00e7\u00e3o multi-CLI integrando Gemini, Claude, Copilot e OpenAI para orquestra\u00e7\u00e3o de agentes inteligentes. Sistema operacional open source para neg\u00f3cios impulsionados por IA. Smoke checks automatizados e CI/CD matricial com GitHub Actions em Python e TypeScript.',
-          tech: ['TypeScript', 'Python', 'Claude', 'OpenAI', 'Gemini', 'GitHub Actions', 'Docker'],
-          color: '#a78bfa', github: 'https://github.com/brunocsilva41/agent-orquestrator' },
-        { tag: 'Web', title: 'Aplica\u00e7\u00f5es Web', role: 'Frontend Developer',
-          desc: 'Landing page responsiva em React/TypeScript com performance otimizada e lazy loading. Dashboard financeiro interativo com gest\u00e3o completa de receitas, despesas e relat\u00f3rios em tempo real. Ambos com deploy cont\u00ednuo na Vercel e design system consistente.',
-          tech: ['React', 'TypeScript', 'CSS', 'Vercel'],
-          color: '#ff6b9d', github: 'https://github.com/brunocsilva41/landingpage-intelsis2', demo: 'https://landingpage-intelsis2.vercel.app' },
-        { tag: 'SaaS', title: 'Sistemas', role: 'Full-Stack Developer',
-          desc: 'SaaS para emiss\u00e3o de NF-e/NFS-e/CT-e com DDD em NestJS, Prisma e criptografia AES-256-GCM para certificados digitais. Interface web para gerenciamento de bancos de dados com visualiza\u00e7\u00e3o de schemas, execu\u00e7\u00e3o de queries e exporta\u00e7\u00e3o de dados.',
-          tech: ['NestJS', 'TypeScript', 'PostgreSQL', 'Prisma', 'Redis', 'BullMQ', 'Docker'],
-          color: '#ffd76b', github: 'https://github.com/brunocsilva41/integracao_sefaz' },
-        { tag: 'Game', title: 'TrioOnline', role: 'Game Engine Developer',
-          desc: 'Jogo multiplayer com engine determin\u00edstica baseada em ticks. Monorepo React/Next.js + Colyseus para sincroniza\u00e7\u00e3o em tempo real. Kubernetes com ArgoCD para deploy cont\u00ednuo, Prisma + PostgreSQL + Redis para persist\u00eancia e cache distribu\u00eddo.',
-          tech: ['TypeScript', 'React', 'Next.js', 'Colyseus', 'Prisma', 'PostgreSQL', 'Redis', 'Docker', 'K8s', 'ArgoCD'],
-          color: '#6c8cff', github: 'https://github.com/brunocsilva41/TrioOnline' },
-      ];
-
-      function closeProjectModal() {
-        document.getElementById('project-modal').classList.remove('active');
-        document.body.style.overflow = '';
-      }
-
-      function openProjectModal(idx) {
-        const p = projectData[idx];
-        if (!p) return;
-        document.getElementById('modal-tag').textContent = p.tag;
-        document.getElementById('modal-tag').style.cssText = 'background:rgba('+hexToRgb(p.color)+',0.15);color:'+p.color;
-        document.getElementById('modal-title').textContent = p.title;
-        document.getElementById('modal-role').textContent = p.role;
-        document.getElementById('modal-desc').textContent = p.desc;
-        const techs = document.getElementById('modal-techs');
-        techs.innerHTML = '';
-        p.tech.forEach(t => {
-          const s = document.createElement('span');
-          s.className = 'modal-tech'; s.textContent = t;
-          techs.appendChild(s);
-        });
-        const links = document.getElementById('modal-links');
-        links.innerHTML = '';
-        const gh = document.createElement('a');
-        gh.href = p.github; gh.target = '_blank'; gh.className = 'modal-link github';
-        gh.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg> GitHub';
-        links.appendChild(gh);
-        if (p.demo) {
-          const dm = document.createElement('a');
-          dm.href = p.demo; dm.target = '_blank'; dm.className = 'modal-link demo';
-          dm.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg> Demo';
-          links.appendChild(dm);
-        }
-        document.getElementById('project-modal').classList.add('active');
-        document.body.style.overflow = 'hidden';
-      }
-
-      function hexToRgb(hex) {
-        const r = parseInt(hex.slice(1,3), 16);
-        const g = parseInt(hex.slice(3,5), 16);
-        const b = parseInt(hex.slice(5,7), 16);
-        return r+','+g+','+b;
-      }
-
-      document.addEventListener('DOMContentLoaded', () => {
-        const container = document.getElementById('project-cards');
-        if (!container) return;
-        projectData.forEach((p, i) => {
-          const card = document.createElement('div');
-          card.className = 'project-card';
-          card.style.setProperty('--card-accent', p.color);
-          card.innerHTML =
-            '<a href="'+p.github+'" target="_blank" class="card-github-icon" onclick="event.stopPropagation()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg></a>' +
-            '<div class="project-card-header"><span class="project-card-tag" style="background:rgba('+hexToRgb(p.color)+',0.15);color:'+p.color+'">'+p.tag+'</span><h3 class="project-card-title">'+p.title+'</h3></div>' +
-            '<p class="project-card-desc">'+p.desc.substring(0, 100)+'...</p>' +
-            '<div class="project-card-techs">'+p.tech.slice(0,4).map(t => '<span class="project-card-tech">'+t+'</span>').join('')+'</div>';
-          card.addEventListener('click', () => openProjectModal(i));
-          container.appendChild(card);
-        });
-      });
-
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') closeProjectModal();
-      });
-    </script>
+    <script type="module" src="/src/site/site-main.js"></script>
   </body>
 </html>
