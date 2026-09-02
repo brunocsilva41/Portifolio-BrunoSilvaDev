@@ -4,130 +4,202 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Bruno Silva | Dev Portfolio</title>
-    <link rel="stylesheet" href="/src/style.css" />
+    <meta name="description" content="Portfólio de Bruno Silva, Software Engineer. Sistemas fiscais (NF-e/NFS-e/CT-e), agentes de IA, jogos multiplayer em tempo real e integrações com ERPs." />
+    <meta name="theme-color" content="#070914" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Bruno Silva | Software Engineer" />
+    <meta property="og:description" content="Sistemas fiscais, agentes de IA, jogos multiplayer e integrações com ERPs. Explore os projetos em uma constelação 3D interativa." />
+    <meta property="og:locale" content="pt_BR" />
+    <title>Bruno Silva | Software Engineer</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/src/styles/site.css" />
   </head>
   <body>
     <div id="stars-bg"></div>
     <div id="nebula-bg"></div>
 
-    <div id="loading">
-      <div class="loader-star">
-        <svg width="40" height="40" viewBox="0 0 40 40"><path d="M20 2 L23.5 15 L37 15 L26 24 L29 38 L20 29 L11 38 L14 24 L3 15 L16.5 15 Z" fill="rgba(200,215,255,0.8)"/></svg>
-      </div>
-      <p id="loading-text"></p>
-    </div>
-
-    <div id="main-content">
-      <header id="hero">
-        <div class="hero-star" id="hero-star">
-          <svg width="48" height="48" viewBox="0 0 48 48"><path d="M24 3 L28.5 17 L43 17 L31 27 L35 42 L24 33 L13 42 L17 27 L5 17 L19.5 17 Z" fill="url(#heroGrad)"/><defs><linearGradient id="heroGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#ffffff"/><stop offset="100%" stop-color="#8aacff"/></linearGradient></defs></svg>
+    <nav id="navbar">
+      <div class="nav-brand">Bruno Silva</div>
+      <div class="nav-links">
+        <a href="#about" class="nav-link" data-i18n="nav.about">Sobre</a>
+        <a href="#experience" class="nav-link" data-i18n="nav.experience">Experi&ecirc;ncia</a>
+        <a href="#projects" class="nav-link" data-i18n="nav.projects">Projetos</a>
+        <a href="#contact" class="nav-link" data-i18n="nav.contact">Contato</a>
+        <div class="lang-toggle">
+          <button type="button" data-lang="pt">PT</button>
+          <button type="button" data-lang="en">EN</button>
         </div>
-        <h1 class="hero-title"><span class="gradient-text">BRUNO SILVA</span></h1>
-        <p class="hero-sub">Full-Stack Developer &middot; Constelação de Projetos</p>
-        <p class="hero-hint">✦ Explore as estrelas para descobrir meus projetos ✦</p>
-      </header>
-
-      <div id="nav-console">
-        <div class="console-label">SELECIONE O DESTINO</div>
-        <div class="console-btns">
-          <button class="nav-star" data-group="frontend">
-            <svg class="star-icon" width="20" height="20" viewBox="0 0 48 48"><path d="M24 3 L28.5 17 L43 17 L31 27 L35 42 L24 33 L13 42 L17 27 L5 17 L19.5 17 Z" fill="rgba(108,140,255,0.9)"/></svg>
-            <span class="nav-label">Frontend & Web</span>
-          </button>
-          <button class="nav-star" data-group="backend">
-            <svg class="star-icon" width="20" height="20" viewBox="0 0 48 48"><path d="M24 3 L28.5 17 L43 17 L31 27 L35 42 L24 33 L13 42 L17 27 L5 17 L19.5 17 Z" fill="rgba(80,227,194,0.9)"/></svg>
-            <span class="nav-label">Backend & Infra</span>
-          </button>
-          <button class="nav-star" data-group="tools">
-            <svg class="star-icon" width="20" height="20" viewBox="0 0 48 48"><path d="M24 3 L28.5 17 L43 17 L31 27 L35 42 L24 33 L13 42 L17 27 L5 17 L19.5 17 Z" fill="rgba(167,139,250,0.9)"/></svg>
-            <span class="nav-label">AI & Automação</span>
-          </button>
-        </div>
+        <a href="/space.html" class="nav-space-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
+          </svg>
+          <span data-i18n="nav.space">Vis&atilde;o Espacial</span>
+        </a>
       </div>
+    </nav>
 
-      <div id="bottom-bar">
-        <button id="view-btn" title="Alternar visão">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-          STACKS
-        </button>
-        <button id="overview-btn" title="Visão geral">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-        </button>
-        <button id="theme-btn" title="Tema nebulosa">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-        </button>
-        <button id="reset-btn" title="Resetar constelação">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
-        </button>
-        <button id="import-btn" title="Importar projeto do GitHub">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        </button>
-      </div>
-    </div>
-
-    <div id="import-modal">
-      <div id="import-backdrop"></div>
-      <div id="import-container">
-        <button id="import-close">&times;</button>
-        <h2>Importar Projeto do GitHub</h2>
-        <p class="import-sub">Cole a URL do reposit&oacute;rio para importar automaticamente</p>
-        <form id="import-form">
-          <div class="import-input-wrap">
-            <input type="url" id="import-url" placeholder="https://github.com/usuario/repositorio" required />
-            <button type="submit">Buscar</button>
+    <div id="profile-view">
+      <section id="hero-section" class="port-section">
+        <div class="hero-content">
+          <span class="hero-availability"><span class="availability-dot"></span><span data-i18n="hero.available">Dispon&iacute;vel para projetos</span></span>
+          <p class="hero-greeting" data-i18n="hero.greeting">Ol&aacute;, eu sou</p>
+          <h1 class="hero-name"><span class="gradient-text">Bruno Silva</span></h1>
+          <p class="hero-subtitle" data-i18n="hero.subtitle">Software Engineer | Sistemas Fiscais &middot; IA &middot; Multiplayer</p>
+          <p class="hero-tagline" data-i18n="hero.tagline">Engenheiro de software focado em resolver problemas reais.</p>
+          <div class="hero-buttons">
+            <a href="#projects" class="cta-primary" data-i18n="hero.cta.projects">Ver Projetos</a>
+            <a href="/space.html" class="cta-space">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
+              </svg>
+              <span data-i18n="hero.cta.space">Vis&atilde;o Espacial</span>
+            </a>
           </div>
-        </form>
-        <div id="import-status"></div>
-        <div id="import-preview">
-          <div class="preview-header">
-            <span class="preview-tag" id="preview-tag"></span>
-            <h3 id="preview-title" class="preview-title"></h3>
-            <div class="preview-role" id="preview-role"></div>
+          <div class="stats-strip">
+            <div class="stat-item"><span class="stat-number" id="stat-years">5+</span><span class="stat-label" data-i18n="stats.years">Anos em tecnologia</span></div>
+            <div class="stat-item"><span class="stat-number" id="stat-projects">15</span><span class="stat-label" data-i18n="stats.projects">Projetos reais</span></div>
+            <div class="stat-item"><span class="stat-number" id="stat-techs">30+</span><span class="stat-label" data-i18n="stats.techs">Tecnologias</span></div>
+            <div class="stat-item"><span class="stat-number" id="stat-cases">2</span><span class="stat-label" data-i18n="stats.cases">Case studies</span></div>
           </div>
-          <p id="preview-desc" class="preview-desc"></p>
-          <div class="preview-techs" id="preview-techs"></div>
-          <a id="preview-link" class="preview-link" target="_blank"></a>
         </div>
-        <button id="import-confirm" style="display:none">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
-          Adicionar &agrave; Constela&ccedil;&atilde;o
-        </button>
+      </section>
+
+      <section id="about" class="port-section">
+        <h2 class="section-title" data-i18n="section.about">Sobre</h2>
+        <div class="about-content">
+          <p data-i18n="about.p1"></p>
+          <p class="about-cta" data-i18n="about.p2"></p>
+        </div>
+      </section>
+
+      <section id="experience" class="port-section">
+        <h2 class="section-title" data-i18n="section.experience">Experi&ecirc;ncia</h2>
+        <div class="timeline" id="experience-timeline"></div>
+      </section>
+
+      <section id="skills" class="port-section">
+        <h2 class="section-title" data-i18n="section.skills">Skills</h2>
+        <div class="skills-categories">
+          <div class="skills-category">
+            <h3 class="skills-cat-title" style="color: var(--accent-blue)" data-i18n="skills.frontend">Frontend</h3>
+            <div class="skills-grid">
+              <div class="skill-card"><span class="skill-name">TypeScript</span></div>
+              <div class="skill-card"><span class="skill-name">React</span></div>
+              <div class="skill-card"><span class="skill-name">Next.js</span></div>
+              <div class="skill-card"><span class="skill-name">React Native</span></div>
+              <div class="skill-card"><span class="skill-name">Tailwind CSS</span></div>
+              <div class="skill-card"><span class="skill-name">Three.js</span></div>
+            </div>
+          </div>
+          <div class="skills-category">
+            <h3 class="skills-cat-title" style="color: var(--accent-green)" data-i18n="skills.backend">Backend</h3>
+            <div class="skills-grid">
+              <div class="skill-card"><span class="skill-name">Node.js</span></div>
+              <div class="skill-card"><span class="skill-name">Fastify</span></div>
+              <div class="skill-card"><span class="skill-name">NestJS</span></div>
+              <div class="skill-card"><span class="skill-name">Go</span></div>
+              <div class="skill-card"><span class="skill-name">Laravel</span></div>
+              <div class="skill-card"><span class="skill-name">.NET</span></div>
+            </div>
+          </div>
+          <div class="skills-category">
+            <h3 class="skills-cat-title" style="color: var(--accent-purple)" data-i18n="skills.infra">Bancos &amp; Infra</h3>
+            <div class="skills-grid">
+              <div class="skill-card"><span class="skill-name">PostgreSQL</span></div>
+              <div class="skill-card"><span class="skill-name">MySQL</span></div>
+              <div class="skill-card"><span class="skill-name">Redis</span></div>
+              <div class="skill-card"><span class="skill-name">Docker</span></div>
+              <div class="skill-card"><span class="skill-name">Kubernetes</span></div>
+              <div class="skill-card"><span class="skill-name">AWS</span></div>
+            </div>
+          </div>
+          <div class="skills-category">
+            <h3 class="skills-cat-title" style="color: #ffd76b" data-i18n="skills.tools">Ferramentas &amp; IA</h3>
+            <div class="skills-grid">
+              <div class="skill-card"><span class="skill-name">GitHub Actions</span></div>
+              <div class="skill-card"><span class="skill-name">Playwright</span></div>
+              <div class="skill-card"><span class="skill-name">Elasticsearch</span></div>
+              <div class="skill-card"><span class="skill-name">RabbitMQ</span></div>
+              <div class="skill-card"><span class="skill-name">LangChain</span></div>
+              <div class="skill-card"><span class="skill-name">MCP</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="case-studies" class="port-section">
+        <h2 class="section-title" data-i18n="section.cases">Case Studies</h2>
+        <div class="cs-highlight-grid" id="case-study-cards"></div>
+      </section>
+
+      <section id="projects" class="port-section">
+        <h2 class="section-title" data-i18n="section.projects">Projetos em Destaque</h2>
+        <div class="projects-grid" id="project-cards"></div>
+      </section>
+
+      <section id="how-i-work" class="port-section">
+        <h2 class="section-title" data-i18n="section.how">Como eu trabalho</h2>
+        <div class="how-grid">
+          <div class="how-card">
+            <h3 class="how-title" data-i18n="how.quality.title">Qualidade com testes</h3>
+            <p class="how-desc" data-i18n="how.quality.desc"></p>
+          </div>
+          <div class="how-card">
+            <h3 class="how-title" data-i18n="how.cicd.title">CI/CD desde o in&iacute;cio</h3>
+            <p class="how-desc" data-i18n="how.cicd.desc"></p>
+          </div>
+          <div class="how-card">
+            <h3 class="how-title" data-i18n="how.security.title">Seguran&ccedil;a em primeiro lugar</h3>
+            <p class="how-desc" data-i18n="how.security.desc"></p>
+          </div>
+          <div class="how-card">
+            <h3 class="how-title" data-i18n="how.ai.title">IA com rigor</h3>
+            <p class="how-desc" data-i18n="how.ai.desc"></p>
+          </div>
+        </div>
+      </section>
+
+      <section id="contact" class="port-section">
+        <h2 class="section-title" data-i18n="section.contact">Contato</h2>
+        <div class="contact-links">
+          <a href="mailto:brunocesar.social@gmail.com" class="contact-link" target="_blank">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            brunocesar.social@gmail.com
+          </a>
+          <a href="https://github.com/brunocsilva41" class="contact-link" target="_blank">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+            GitHub
+          </a>
+          <a href="https://www.linkedin.com/in/dev-bruno-silva/" class="contact-link" target="_blank">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+            LinkedIn
+          </a>
+          <a href="tel:+5511988644269" class="contact-link" target="_blank">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            +55 11 988644269
+          </a>
+        </div>
+      </section>
+
+      <footer id="footer">
+        <p data-i18n="footer.rights">&copy; 2026 Bruno Silva. Todos os direitos reservados.</p>
+      </footer>
+    </div>
+    <div id="project-modal">
+      <div class="modal-backdrop"></div>
+      <div class="modal-card">
+        <div class="modal-header">
+          <button class="modal-close">&times;</button>
+          <div class="modal-tag" id="modal-tag"></div>
+          <h3 class="modal-title" id="modal-title"></h3>
+          <div class="modal-role" id="modal-role"></div>
+        </div>
+        <p class="modal-desc" id="modal-desc"></p>
+        <div class="modal-techs" id="modal-techs"></div>
+        <div class="modal-links" id="modal-links"></div>
       </div>
     </div>
 
-    <div id="project-overlay">
-      <div class="backdrop"></div>
-      <div id="project-card">
-        <button class="close-btn" id="close-btn">&times;</button>
-        <div class="tag" id="p-tag"></div>
-        <h2 id="p-title"></h2>
-        <div class="project-role" id="p-role"></div>
-        <div class="project-desc" id="p-desc"></div>
-        <div class="tech-stack" id="p-tech"></div>
-        <div class="project-links" id="p-links"></div>
-        <div id="p-qr" class="qr-section" style="display:none">
-          <img id="qr-img" src="" alt="QR Code" />
-        </div>
-        <button id="delete-btn" class="delete-btn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-          Remover da constela&ccedil;&atilde;o
-        </button>
-      </div>
-    </div>
-
-    <div id="travel-status"></div>
-    <div id="toast"></div>
-
-    <script type="importmap">
-      {
-        "imports": {
-          "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
-          "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
-        }
-      }
-    </script>
-    <script type="module" src="/src/main.js"></script>
+    <script type="module" src="/src/site/site-main.js"></script>
   </body>
 </html>
