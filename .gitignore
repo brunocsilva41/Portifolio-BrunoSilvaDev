@@ -24,3 +24,7 @@ dist-ssr
 *.sw?
 
 .vercel
+
+# Arquivos locais de trabalho
+.claude/
+Plano-para-Claude.md
