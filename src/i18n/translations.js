@@ -8,6 +8,8 @@ export const STRINGS = {
   'nav.contact': { pt: 'Contato', en: 'Contact' },
   'nav.space': { pt: 'Visão Espacial', en: 'Space View' },
 
+  'nav.available': { pt: 'Disponível para projetos', en: 'Available for projects' },
+  'nav.availableShort': { pt: 'Disponível', en: 'Available' },
   'hero.available': { pt: 'Disponível para projetos', en: 'Available for projects' },
   'hero.greeting': { pt: 'Olá, eu sou', en: "Hi, I'm" },
   'hero.subtitle': { pt: 'Software Engineer | Sistemas Fiscais · IA · Multiplayer', en: 'Software Engineer | Tax Systems · AI · Multiplayer' },

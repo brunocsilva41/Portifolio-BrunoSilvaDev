@@ -117,13 +117,6 @@
         border-bottom: 1px solid rgba(200, 215, 255, 0.05);
       }
 
-      .nav-brand {
-        font-size: 16px; font-weight: 700; letter-spacing: -0.3px;
-        background: linear-gradient(135deg, #ffffff 0%, #8aacff 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-      }
 
       .nav-links { display: flex; align-items: center; gap: 6px; }
 
@@ -757,24 +750,101 @@
 }
 .lang-toggle button:hover:not(.active) { color: rgba(200, 215, 255, 0.8); }
 
-/* ── Availability badge ── */
-.hero-availability {
-  display: inline-flex; align-items: center; gap: 8px;
-  padding: 6px 16px; border-radius: 100px; margin-bottom: 20px;
-  background: rgba(80, 227, 130, 0.06);
-  border: 1px solid rgba(80, 227, 130, 0.2);
-  font-size: 11px; font-weight: 600; letter-spacing: 1px;
-  color: #50e382; text-transform: uppercase;
+/* ── Professional Nav Status Badge ── */
+.nav-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 6px 14px 6px 11px;
+  border-radius: 9999px;
+  background: rgba(16, 24, 40, 0.6);
+  background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.01) 100%);
+  border: 1px solid rgba(80, 227, 130, 0.22);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  flex-shrink: 0;
 }
-.availability-dot {
-  width: 7px; height: 7px; border-radius: 50%;
+
+.nav-status-badge:hover {
+  background: rgba(16, 24, 40, 0.85);
+  border-color: rgba(80, 227, 130, 0.45);
+  box-shadow: 0 0 18px rgba(80, 227, 130, 0.2), 0 4px 14px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  transform: translateY(-1px);
+}
+
+.status-radar {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 8px;
+  height: 8px;
+  flex-shrink: 0;
+}
+
+.status-ping {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
   background: #50e382;
-  box-shadow: 0 0 8px rgba(80, 227, 130, 0.8);
-  animation: availability-pulse 2s ease-in-out infinite;
+  opacity: 0.75;
+  animation: status-radar-ping 2.2s cubic-bezier(0, 0, 0.2, 1) infinite;
 }
-@keyframes availability-pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
+
+.status-dot {
+  position: relative;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #50e382;
+  box-shadow: 0 0 8px rgba(80, 227, 130, 0.85);
+}
+
+@keyframes status-radar-ping {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.85;
+  }
+  70%, 100% {
+    transform: scale(2.8);
+    opacity: 0;
+  }
+}
+
+.status-text-full,
+.status-text-short {
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  color: rgba(235, 243, 255, 0.9);
+  transition: color 0.3s ease;
+  white-space: nowrap;
+}
+
+.nav-status-badge:hover .status-text-full,
+.nav-status-badge:hover .status-text-short {
+  color: #ffffff;
+}
+
+.status-text-short {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .status-text-full { display: none; }
+  .status-text-short { display: inline; }
+  .nav-status-badge { padding: 5px 10px 5px 9px; font-size: 11px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .status-ping { animation: none; opacity: 0; }
 }
 
 /* ── Experience timeline ── */
