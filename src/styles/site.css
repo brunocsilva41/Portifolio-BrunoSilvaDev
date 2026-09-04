@@ -800,9 +800,9 @@
   box-shadow: 0 0 10px rgba(167, 139, 250, 0.6);
 }
 .timeline-period {
-  font-family: var(--font-mono); font-size: 10px;
-  letter-spacing: 1px; text-transform: uppercase;
-  color: rgba(200, 215, 255, 0.35);
+  font-family: var(--font-mono); font-size: 12px;
+  letter-spacing: 0.5px; text-transform: uppercase;
+  color: rgba(200, 215, 255, 0.6);
 }
 .timeline-role {
   font-size: 16px; font-weight: 600;
