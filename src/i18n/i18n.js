@@ -4,6 +4,13 @@ const LANG_KEY = 'portfolio-lang';
 
 export function getLang() {
   try {
+    const urlLang = new URLSearchParams(window.location.search).get('lang');
+    if (urlLang === 'pt' || urlLang === 'en') {
+      localStorage.setItem(LANG_KEY, urlLang);
+      return urlLang;
+    }
+  } catch {}
+  try {
     const saved = localStorage.getItem(LANG_KEY);
     if (saved === 'pt' || saved === 'en') return saved;
   } catch {}
@@ -33,6 +40,17 @@ export function applyStaticTranslations() {
   const lang = getLang();
   document.documentElement.lang = lang === 'pt' ? 'pt-BR' : 'en';
   document.title = ts('meta.title');
+  const setMeta = (selector, content) => {
+    const el = document.querySelector(selector);
+    if (el) el.setAttribute('content', content);
+  };
+  const description = ts('meta.description');
+  setMeta('meta[name="description"]', description);
+  setMeta('meta[property="og:title"]', ts('meta.title'));
+  setMeta('meta[property="og:description"]', description);
+  setMeta('meta[property="og:locale"]', lang === 'pt' ? 'pt_BR' : 'en_US');
+  setMeta('meta[name="twitter:title"]', ts('meta.title'));
+  setMeta('meta[name="twitter:description"]', description);
   document.querySelectorAll('[data-i18n]').forEach(el => {
     el.textContent = ts(el.getAttribute('data-i18n'));
   });

@@ -4,9 +4,54 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <meta name="description" content="Visão espacial 3D do portfólio de Bruno Silva com projetos, stacks e experiências em software, IA e integrações fiscais." />
+    <link rel="canonical" href="https://portifolio-brunosilvadev.vercel.app/space.html" />
+    <link rel="alternate" hreflang="pt-BR" href="https://portifolio-brunosilvadev.vercel.app/space.html?lang=pt" />
+    <link rel="alternate" hreflang="en" href="https://portifolio-brunosilvadev.vercel.app/space.html?lang=en" />
+    <link rel="alternate" hreflang="x-default" href="https://portifolio-brunosilvadev.vercel.app/space.html" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Bruno Silva Portfolio" />
+    <meta property="og:url" content="https://portifolio-brunosilvadev.vercel.app/space.html" />
+    <meta property="og:title" content="Bruno Silva | Constelação de Projetos" />
+    <meta property="og:description" content="Explore a constelação 3D de projetos e stacks de Bruno Silva: sistemas fiscais, IA aplicada e software backend/frontend." />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:locale:alternate" content="en_US" />
+    <meta property="og:image" content="https://portifolio-brunosilvadev.vercel.app/social-preview.svg" />
+    <meta property="og:image:alt" content="Constelação 3D com projetos do portfólio de Bruno Silva" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Bruno Silva | Constelação de Projetos" />
+    <meta name="twitter:description" content="Explore a constelação 3D de projetos e stacks de Bruno Silva." />
+    <meta name="twitter:image" content="https://portifolio-brunosilvadev.vercel.app/social-preview.svg" />
     <title>Bruno Silva | Constelação</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="stylesheet" href="/src/styles/space.css" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "@id": "https://portifolio-brunosilvadev.vercel.app/#website",
+            "url": "https://portifolio-brunosilvadev.vercel.app/",
+            "name": "Portfólio Bruno Silva",
+            "inLanguage": ["pt-BR", "en"]
+          },
+          {
+            "@type": "WebPage",
+            "@id": "https://portifolio-brunosilvadev.vercel.app/space.html#webpage",
+            "url": "https://portifolio-brunosilvadev.vercel.app/space.html",
+            "name": "Bruno Silva | Constelação de Projetos",
+            "description": "Experiência 3D interativa para explorar projetos, tecnologias e cases profissionais.",
+            "isPartOf": {
+              "@id": "https://portifolio-brunosilvadev.vercel.app/#website"
+            }
+          }
+        ]
+      }
+    </script>
   </head>
   <body>
     <div id="stars-bg"></div>
@@ -19,12 +64,12 @@
       <p id="loading-text"></p>
     </div>
 
-    <a href="/" id="back-link" title="Voltar ao Portfólio">
+    <a href="/" id="back-link" title="Voltar ao Portfólio" aria-label="Voltar para a página principal do portfólio">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
       Voltar ao Portfólio
     </a>
 
-    <div id="main-content">
+    <main id="main-content" tabindex="-1">
       <div id="space-view">
         <div id="nav-console">
           <div class="console-label">SELECIONE O DESTINO</div>
@@ -45,24 +90,24 @@
         </div>
 
         <div id="bottom-bar">
-          <button id="view-btn" title="Alternar visão">
+          <button id="view-btn" title="Alternar visão" aria-label="Alternar visão entre projetos e stacks">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
             STACKS
           </button>
-          <button id="overview-btn" title="Visão geral">
+          <button id="overview-btn" title="Visão geral" aria-label="Voltar para a visão geral">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
           </button>
-          <button id="theme-btn" title="Tema nebulosa">
+          <button id="theme-btn" title="Tema nebulosa" aria-label="Alternar tema da nebulosa">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
           </button>
-        </div>
+        </main>
       </div>
     </div>
 
     <div id="project-overlay">
       <div class="backdrop"></div>
       <div id="project-card">
-        <button class="close-btn" id="close-btn">&times;</button>
+        <button class="close-btn" id="close-btn" aria-label="Fechar painel de projeto">&times;</button>
         <div class="tag" id="p-tag"></div>
         <div class="tag project-group-tag" id="p-group"></div>
         <h2 id="p-title"></h2>

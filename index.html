@@ -4,21 +4,81 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
     <meta name="description" content="Portfólio de Bruno Silva, Software Engineer. Sistemas fiscais (NF-e/NFS-e/CT-e), agentes de IA, jogos multiplayer em tempo real e integrações com ERPs." />
+    <link rel="canonical" href="https://portifolio-brunosilvadev.vercel.app/" />
+    <link rel="alternate" hreflang="pt-BR" href="https://portifolio-brunosilvadev.vercel.app/?lang=pt" />
+    <link rel="alternate" hreflang="en" href="https://portifolio-brunosilvadev.vercel.app/?lang=en" />
+    <link rel="alternate" hreflang="x-default" href="https://portifolio-brunosilvadev.vercel.app/" />
     <meta name="theme-color" content="#070914" />
     <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Bruno Silva Portfolio" />
+    <meta property="og:url" content="https://portifolio-brunosilvadev.vercel.app/" />
     <meta property="og:title" content="Bruno Silva | Software Engineer" />
     <meta property="og:description" content="Sistemas fiscais, agentes de IA, jogos multiplayer e integrações com ERPs. Explore os projetos em uma constelação 3D interativa." />
     <meta property="og:locale" content="pt_BR" />
+    <meta property="og:locale:alternate" content="en_US" />
+    <meta property="og:image" content="https://portifolio-brunosilvadev.vercel.app/social-preview.svg" />
+    <meta property="og:image:alt" content="Preview do portfólio de Bruno Silva com tema espacial" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Bruno Silva | Software Engineer" />
+    <meta name="twitter:description" content="Sistemas fiscais, agentes de IA, jogos multiplayer e integrações com ERPs." />
+    <meta name="twitter:image" content="https://portifolio-brunosilvadev.vercel.app/social-preview.svg" />
     <title>Bruno Silva | Software Engineer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="/src/styles/site.css" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Person",
+            "@id": "https://portifolio-brunosilvadev.vercel.app/#person",
+            "name": "Bruno Silva",
+            "jobTitle": "Software Engineer",
+            "email": "mailto:brunocesar.social@gmail.com",
+            "telephone": "+55 11 98864-4269",
+            "url": "https://portifolio-brunosilvadev.vercel.app/",
+            "sameAs": [
+              "https://github.com/brunocsilva41",
+              "https://www.linkedin.com/in/dev-bruno-silva/"
+            ]
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://portifolio-brunosilvadev.vercel.app/#website",
+            "url": "https://portifolio-brunosilvadev.vercel.app/",
+            "name": "Portfólio Bruno Silva",
+            "inLanguage": ["pt-BR", "en"],
+            "author": {
+              "@id": "https://portifolio-brunosilvadev.vercel.app/#person"
+            }
+          },
+          {
+            "@type": "CollectionPage",
+            "@id": "https://portifolio-brunosilvadev.vercel.app/#webpage",
+            "url": "https://portifolio-brunosilvadev.vercel.app/",
+            "name": "Bruno Silva | Software Engineer",
+            "description": "Portfólio profissional com experiência em sistemas fiscais, integrações ERP, agentes de IA e aplicações multiplayer.",
+            "isPartOf": {
+              "@id": "https://portifolio-brunosilvadev.vercel.app/#website"
+            },
+            "about": {
+              "@id": "https://portifolio-brunosilvadev.vercel.app/#person"
+            }
+          }
+        ]
+      }
+    </script>
   </head>
   <body>
+    <a class="skip-link" href="#profile-view">Pular para o conteúdo principal</a>
     <div id="stars-bg"></div>
     <div id="nebula-bg"></div>
 
-    <nav id="navbar">
+    <nav id="navbar" aria-label="Navegação principal">
       <a href="#contact" class="nav-status-badge" title="Dispon&iacute;vel para projetos">
         <span class="status-radar" aria-hidden="true">
           <span class="status-ping"></span>
@@ -45,7 +105,7 @@
       </div>
     </nav>
 
-    <div id="profile-view">
+    <main id="profile-view" tabindex="-1">
       <section id="hero-section" class="port-section">
         <div class="hero-content">
           <p class="hero-greeting" data-i18n="hero.greeting">Ol&aacute;, eu sou</p>
@@ -168,19 +228,19 @@
       <section id="contact" class="port-section">
         <h2 class="section-title" data-i18n="section.contact">Contato</h2>
         <div class="contact-links">
-          <a href="mailto:brunocesar.social@gmail.com" class="contact-link" target="_blank">
+          <a href="mailto:brunocesar.social@gmail.com" class="contact-link" target="_blank" rel="noopener noreferrer" aria-label="Enviar e-mail para Bruno Silva">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
             brunocesar.social@gmail.com
           </a>
-          <a href="https://github.com/brunocsilva41" class="contact-link" target="_blank">
+          <a href="https://github.com/brunocsilva41" class="contact-link" target="_blank" rel="noopener noreferrer" aria-label="Abrir perfil GitHub de Bruno Silva">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
             GitHub
           </a>
-          <a href="https://www.linkedin.com/in/dev-bruno-silva/" class="contact-link" target="_blank">
+          <a href="https://www.linkedin.com/in/dev-bruno-silva/" class="contact-link" target="_blank" rel="noopener noreferrer" aria-label="Abrir perfil LinkedIn de Bruno Silva">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
             LinkedIn
           </a>
-          <a href="tel:+5511988644269" class="contact-link" target="_blank">
+          <a href="tel:+5511988644269" class="contact-link" target="_blank" rel="noopener noreferrer" aria-label="Ligar para Bruno Silva">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
             +55 11 988644269
           </a>
@@ -190,12 +250,12 @@
       <footer id="footer">
         <p data-i18n="footer.rights">&copy; 2026 Bruno Silva. Todos os direitos reservados.</p>
       </footer>
-    </div>
-    <div id="project-modal">
+    </main>
+    <div id="project-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
       <div class="modal-backdrop"></div>
       <div class="modal-card">
         <div class="modal-header">
-          <button class="modal-close">&times;</button>
+          <button class="modal-close" aria-label="Fechar modal de projeto">&times;</button>
           <div class="modal-tag" id="modal-tag"></div>
           <h3 class="modal-title" id="modal-title"></h3>
           <div class="modal-role" id="modal-role"></div>

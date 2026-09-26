@@ -1,5 +1,9 @@
 export const STRINGS = {
   'meta.title': { pt: 'Bruno Silva | Software Engineer', en: 'Bruno Silva | Software Engineer' },
+  'meta.description': {
+    pt: 'Portfólio de Bruno Silva, Software Engineer especializado em sistemas fiscais (NF-e/NFS-e/CT-e), integração com ERPs, agentes de IA e aplicações multiplayer em tempo real.',
+    en: 'Portfolio of Bruno Silva, Software Engineer specialized in tax systems (NF-e/NFS-e/CT-e), ERP integrations, AI agents and real-time multiplayer applications.',
+  },
 
   'nav.about': { pt: 'Sobre', en: 'About' },
   'nav.experience': { pt: 'Experiência', en: 'Experience' },
