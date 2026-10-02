@@ -2,7 +2,7 @@ export const EXPERIENCE = [
   {
     role: { pt: 'Desenvolvedor Full Stack', en: 'Full Stack Developer' },
     company: 'Valiant Group',
-    period: { pt: 'Abr 2025 — Ago 2026', en: 'Apr 2025 — Aug 2026' },
+    period: { pt: 'Abr 2024 — Ago 2026', en: 'Apr 2024 — Aug 2026' },
     location: { pt: 'São Paulo, SP', en: 'São Paulo, Brazil' },
     summary: {
       pt: 'Software house e consultoria de tecnologia com sistemas web, mobile e integrações para clientes de diversos segmentos.',
@@ -24,9 +24,9 @@ export const EXPERIENCE = [
     ],
   },
   {
-    role: { pt: 'Analista de Suporte Técnico', en: 'Technical Support Analyst' },
+    role: { pt: 'Analista de Suporte Técnico e Programação', en: 'Technical Support and Programming Analyst' },
     company: 'Control ID',
-    period: { pt: 'Jun 2021 — Abr 2025', en: 'Jun 2021 — Apr 2025' },
+    period: { pt: 'Jun 2021 — Abr 2024', en: 'Jun 2021 — Apr 2024' },
     location: { pt: 'São Paulo, SP', en: 'São Paulo, Brazil' },
     summary: {
       pt: 'Fabricante de equipamentos de controle de acesso, identificação e automação.',
@@ -34,12 +34,16 @@ export const EXPERIENCE = [
     },
     bullets: [
       {
-        pt: 'Ponto de escalonamento no diagnóstico e resolução de problemas técnicos complexos diretamente com clientes.',
-        en: 'Escalation point for diagnosing and solving complex technical issues directly with customers.',
+        pt: 'Atuação híbrida entre suporte técnico e programação, apoiando clientes e equipes internas com diagnóstico, correções, automações e scripts para agilizar rotinas operacionais.',
+        en: 'Hybrid role across technical support and programming, helping customers and internal teams with diagnostics, fixes, automations and scripts to speed up operational routines.',
       },
       {
-        pt: 'Condução de treinamentos internos para analistas e externos para clientes da empresa.',
-        en: 'Led internal training for analysts and external training for company customers.',
+        pt: 'Ponto de escalonamento para problemas técnicos complexos em equipamentos e sistemas de controle de acesso, com interface direta com clientes.',
+        en: 'Escalation point for complex technical issues in access control devices and systems, working directly with customers.',
+      },
+      {
+        pt: 'Condução de treinamentos internos para analistas e externos para clientes da empresa, traduzindo demandas técnicas em procedimentos claros.',
+        en: 'Led internal training for analysts and external training for company customers, translating technical needs into clear procedures.',
       },
     ],
   },
