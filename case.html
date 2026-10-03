@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Estudos de caso de sistemas em produção: automação fiscal integrada ao ERP Linx, app de segurança do trabalho, prospecção com IA e RAG e sistema para academia." />
+    <meta name="theme-color" content="#0B0E11" />
+    <title>Estudo de caso · Bruno Silva</title>
+    <link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/geist-latin-var.woff2" />
+    <link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/instrument-serif-latin-italic.woff2" />
+    <link rel="stylesheet" href="/src/styles/site.css" />
+    <link rel="stylesheet" href="/src/styles/case.css" />
+  </head>
+  <body class="case-page" data-shell-label="Case">
+    <a class="skip-link" href="#main-content" data-copy="skip">Pular para o conteúdo</a>
+    <header class="site-nav" id="navbar">
+      <div class="site-nav__inner container">
+        <a class="site-nav__brand" href="/"><span class="site-nav__brand-mark" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M3 4h2v16h-2zM5 4h4v2h-4zM7 6h2v5h-2zM5 11h5v2h-5zM8 13h2v5h-2zM5 18h5v2h-5zM13 4h2v16h-2zM15 4h6v2h-6zM15 18h6v2h-6z"/><rect class="signal" x="17" y="10" width="4" height="4" fill="#7FB2FF"/></svg></span><span class="visually-hidden">Bruno Silva</span></a>
+        <p class="site-nav__current" aria-hidden="true"><span class="site-nav__current-index">00</span><span class="site-nav__current-label">Case</span></p>
+        <button class="site-nav__toggle" type="button" aria-expanded="false" aria-controls="site-nav-menu"><span data-copy="navMenu">Menu</span></button>
+        <nav class="site-nav__menu" id="site-nav-menu" aria-label="Navegação principal" data-copy-label="navAria">
+          <a class="site-nav__link" href="/#cases" data-section="cases" data-copy="navCases">Cases</a>
+          <a class="site-nav__link" href="/#depth" data-section="depth" data-copy="navDepth">Profundidade</a>
+          <a class="site-nav__link" href="/#work" data-section="work-hire" data-copy="navHire">Como trabalho</a>
+          <a class="site-nav__link" href="/#trajectory" data-section="trajectory" data-copy="navTrajectory">Trajetória</a>
+          <a class="site-nav__link" href="/#contact" data-section="contact" data-copy="navContact">Contato</a>
+          <div class="lang-toggle" role="group" aria-label="Idioma" data-copy-label="langAria"><button type="button" data-lang="pt">PT</button><button type="button" data-lang="en">EN</button></div>
+          <a class="site-nav__space" href="/space"><span data-copy="navSpace">Visão espacial</span> <span aria-hidden="true">↗</span></a>
+        </nav>
+      </div>
+      <span class="site-nav__progress" aria-hidden="true"></span>
+    </header>
+
+    <main id="main-content" class="case-main" tabindex="-1">
+      <div class="container">
+        <nav class="case-breadcrumb" aria-label="Breadcrumb">
+          <ol class="case-breadcrumb__list">
+            <li><a href="/" data-copy="home">Início</a></li>
+            <li><a href="/cases">Cases</a></li>
+            <li id="case-crumb" aria-current="page" hidden></li>
+          </ol>
+        </nav>
+      </div>
+
+      <section class="case-error container" id="case-error" hidden aria-labelledby="case-error-title">
+        <p class="label" id="case-error-kicker"></p>
+        <h1 class="case-error__title" id="case-error-title" tabindex="-1"></h1>
+        <p class="case-error__text" id="case-error-text"></p>
+        <ul class="case-error__links">
+          <li><a class="link-arrow" href="/cases"><span data-copy="errorIndex">Ver o índice de cases</span> <span class="link-arrow__icon" aria-hidden="true">→</span></a></li>
+          <li><a class="link-arrow" href="/"><span data-copy="errorHome">Voltar ao início</span> <span class="link-arrow__icon" aria-hidden="true">→</span></a></li>
+        </ul>
+      </section>
+
+      <article class="case-article" id="case-article" hidden aria-labelledby="case-title">
+        <section class="case-hero" id="visao" aria-labelledby="case-title">
+          <div class="container case-hero__grid">
+            <p class="case-hero__kicker label label--domain" data-rail-target><span id="case-number"></span><span aria-hidden="true"> · </span><span id="case-category"></span></p>
+            <h1 class="case-hero__title" id="case-title"></h1>
+            <p class="case-hero__pitch" id="case-pitch" hidden></p>
+            <p class="case-hero__summary" id="case-summary" hidden></p>
+            <dl class="case-facts" id="case-facts"></dl>
+          </div>
+        </section>
+
+        <div class="case-chapters" id="case-chapters"></div>
+
+        <section class="case-next container" id="case-next" hidden aria-labelledby="case-next-label">
+          <a class="case-next__link" id="case-next-link" href="/cases">
+            <span class="case-next__label label" id="case-next-label" data-copy="next">Próximo case</span>
+            <span class="case-next__title"><span id="case-next-number" class="case-next__number"></span> <span id="case-next-name"></span> <span class="case-next__arrow" aria-hidden="true">→</span></span>
+            <span class="case-next__pitch" id="case-next-pitch" hidden></span>
+          </a>
+        </section>
+      </article>
+    </main>
+
+    <section class="closing-cta case-closing" id="contact" aria-labelledby="closing-title">
+      <div class="container">
+        <div class="case-closing__lead">
+          <p class="closing-cta__statement" id="closing-title" data-copy="closing">Qual é o próximo sistema que a sua empresa precisa?</p>
+          <p class="case-closing__text" id="closing-text" hidden></p>
+          <div class="case-engagements" id="closing-engagements-block" hidden>
+            
+            <ul class="case-engagements__list" id="closing-engagements"></ul>
+          </div>
+        </div>
+        <div class="closing-cta__actions">
+          <a class="btn-primary" id="closing-primary" href="mailto:brunocesar.social@gmail.com"><span data-copy="closingAction">Escrever um e-mail</span> <span aria-hidden="true">→</span></a>
+          <ul class="closing-cta__list">
+            <li><a href="mailto:brunocesar.social@gmail.com"><span>brunocesar.social@gmail.com</span></a></li>
+            <li><a href="https://www.linkedin.com/in/dev-bruno-silva/" target="_blank" rel="noopener"><span>LinkedIn</span><span aria-hidden="true">↗</span></a></li>
+            <li><a href="https://github.com/brunocsilva41" target="_blank" rel="noopener"><span>GitHub</span><span aria-hidden="true">↗</span></a></li>
+            <li><a href="tel:+5511988644269"><span>+55 11 98864-4269</span></a></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <footer class="site-footer">
+      <div class="container">
+        <p data-copy="footerNote">© 2026 Bruno Silva · BC Consultoria e Desenvolvimento de Softwares · CNPJ 60.589.106/0001-02</p>
+      </div>
+    </footer>
+
+    <a class="case-float-cta" id="case-float-cta" href="#contact" hidden><span data-copy="floatCta">Conversar</span> <span aria-hidden="true">→</span></a>
+
+    <script type="module" src="/src/site/case-main.js"></script>
+  </body>
+</html>
