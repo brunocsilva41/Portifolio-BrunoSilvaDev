@@ -2,5 +2,62 @@
   "framework": "vite",
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
-  "installCommand": "npm install"
+  "installCommand": "npm install",
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "redirects": [
+    { "source": "/case.html", "has": [{ "type": "query", "key": "slug", "value": "steuer" }], "destination": "/cases/steuer", "permanent": true },
+    { "source": "/case", "has": [{ "type": "query", "key": "slug", "value": "steuer" }], "destination": "/cases/steuer", "permanent": true },
+    { "source": "/case.html", "has": [{ "type": "query", "key": "slug", "value": "gestao-fiscal" }], "destination": "/cases/steuer", "permanent": true },
+    { "source": "/case", "has": [{ "type": "query", "key": "slug", "value": "gestao-fiscal" }], "destination": "/cases/steuer", "permanent": true },
+    { "source": "/case.html", "has": [{ "type": "query", "key": "slug", "value": "kippis" }], "destination": "/cases/kippis", "permanent": true },
+    { "source": "/case", "has": [{ "type": "query", "key": "slug", "value": "kippis" }], "destination": "/cases/kippis", "permanent": true },
+    { "source": "/case.html", "has": [{ "type": "query", "key": "slug", "value": "gestao-beneficios" }], "destination": "/cases/kippis", "permanent": true },
+    { "source": "/case", "has": [{ "type": "query", "key": "slug", "value": "gestao-beneficios" }], "destination": "/cases/kippis", "permanent": true },
+    { "source": "/case.html", "has": [{ "type": "query", "key": "slug", "value": "leadspector" }], "destination": "/cases/leadspector", "permanent": true },
+    { "source": "/case", "has": [{ "type": "query", "key": "slug", "value": "leadspector" }], "destination": "/cases/leadspector", "permanent": true },
+    { "source": "/case.html", "has": [{ "type": "query", "key": "slug", "value": "prospeccao-comercial" }], "destination": "/cases/leadspector", "permanent": true },
+    { "source": "/case", "has": [{ "type": "query", "key": "slug", "value": "prospeccao-comercial" }], "destination": "/cases/leadspector", "permanent": true },
+    { "source": "/case.html", "has": [{ "type": "query", "key": "slug", "value": "gymos" }], "destination": "/cases/gymos", "permanent": true },
+    { "source": "/case", "has": [{ "type": "query", "key": "slug", "value": "gymos" }], "destination": "/cases/gymos", "permanent": true },
+    { "source": "/case.html", "has": [{ "type": "query", "key": "slug", "value": "gestao-academia" }], "destination": "/cases/gymos", "permanent": true },
+    { "source": "/case", "has": [{ "type": "query", "key": "slug", "value": "gestao-academia" }], "destination": "/cases/gymos", "permanent": true }
+  ],
+  "headers": [
+    {
+      "source": "/assets/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/fonts/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=()"
+        }
+      ]
+    }
+  ]
 }
