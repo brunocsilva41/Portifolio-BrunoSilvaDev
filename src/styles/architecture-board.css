@@ -1,0 +1,430 @@
+/*
+ * Architecture whiteboard + flow preview.
+ * Consumes tokens from site.css (never redefines them). --domain comes from an ancestor [data-accent].
+ */
+
+/* ── Whiteboard ─────────────────────────────────────────────────────────── */
+
+.architecture-board {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: "stage" "inspector" "legend" "text";
+  min-width: 0;
+  border-block: 1px solid var(--line);
+  color: var(--text-2);
+  font-family: var(--font-sans);
+}
+.architecture-board--external-inspector { grid-template-areas: "stage" "legend" "text"; }
+
+.architecture-board__stage {
+  grid-area: stage;
+  min-width: 0;
+  background-color: var(--surface-2);
+}
+
+/* Toolbar: counts on the left, interaction hint on the right */
+.architecture-board__toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 24px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--line);
+}
+
+.architecture-board__caption {
+  margin: 0;
+  color: var(--text-2);
+  font: 500 var(--fs-label)/1.4 var(--font-mono);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+}
+
+.architecture-board__hint {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+  max-width: none;
+  margin: 0;
+  color: var(--text-2);
+  font: 400 var(--fs-label)/1.4 var(--font-mono);
+}
+.architecture-board__hint-glyph { width: 12px; height: 14px; fill: var(--domain, var(--text-2)); flex: none; }
+.architecture-board__hint-sep { color: var(--text-3); }
+.architecture-board__key {
+  display: inline-grid;
+  place-items: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 4px;
+  border: 1px solid var(--line-strong);
+  border-bottom-width: 2px;
+  border-radius: 2px;
+  background: var(--surface-1);
+  color: var(--text-1);
+  font: 500 var(--fs-label)/1 var(--font-mono);
+}
+
+.architecture-board__canvas {
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-inline: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-strong) transparent;
+}
+.architecture-board__canvas::-webkit-scrollbar { height: 6px; }
+.architecture-board__canvas::-webkit-scrollbar-track { background: transparent; }
+.architecture-board__canvas::-webkit-scrollbar-thumb { background: var(--line-strong); }
+
+.architecture-board__svg {
+  display: block;
+  width: 100%;
+  min-width: var(--board-min-width, 960px);
+  max-width: var(--board-max-width, none);
+  height: auto;
+  margin-inline: auto;
+  overflow: visible;
+}
+
+.architecture-board__scroll-hint {
+  display: none;
+  margin: 0;
+  padding: 8px 16px 12px;
+  color: var(--text-2);
+  font: 500 var(--fs-label)/1.4 var(--font-mono);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+.architecture-board__scroll-hint-icon { margin-right: 4px; }
+
+/* Swimlanes */
+.architecture-board__lane { fill: transparent; }
+.architecture-board__lane--alt { fill: var(--surface-1); fill-opacity: .55; }
+.architecture-board__lane-sep { stroke: var(--line); stroke-width: 1; stroke-dasharray: 2 4; }
+.architecture-board__layer { font: 500 12px/1 var(--font-mono); letter-spacing: .08em; }
+.architecture-board__layer-index { fill: var(--domain, var(--text-2)); }
+.architecture-board__layer-name { fill: var(--text-2); }
+.architecture-board__layer-rule { stroke: var(--line-strong); stroke-width: 1; }
+
+/* Nodes: lit by default */
+.architecture-board__node {
+  cursor: pointer;
+  outline: none;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity var(--dur-2) var(--ease-out);
+}
+
+.architecture-board__node-shape {
+  fill: var(--surface-1);
+  stroke: var(--line-strong);
+  stroke: color-mix(in srgb, var(--domain, var(--text-2)) 55%, var(--line-strong));
+  stroke-width: 1;
+  transition: stroke var(--dur-1) var(--ease-out), fill var(--dur-1) var(--ease-out);
+}
+.architecture-board__node--external .architecture-board__node-shape { stroke-dasharray: 5 3; }
+.architecture-board__node-detail { fill: none; stroke: var(--line-strong); stroke-width: 1; }
+.architecture-board__node-divider { stroke: var(--line); stroke-width: 1; }
+
+.architecture-board__node-glyph {
+  fill: none;
+  stroke: var(--domain, var(--text-2));
+  stroke-width: 1.25;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.architecture-board__node-plus {
+  fill: none;
+  stroke: var(--text-3);
+  stroke-width: 1.25;
+  stroke-linecap: square;
+  transition: stroke var(--dur-1) var(--ease-out);
+}
+
+.architecture-board__node-type { fill: var(--text-2); font: 500 12px/1 var(--font-mono); letter-spacing: .1em; }
+.architecture-board__node-title { fill: var(--text-1); font: 500 15px/1 var(--font-sans); letter-spacing: -0.01em; }
+.architecture-board__node-tech { fill: var(--text-2); font: 400 12px/1 var(--font-mono); }
+
+.architecture-board__node-focus { fill: none; stroke: var(--accent); stroke-width: 2; opacity: 0; }
+.architecture-board__node:focus-visible .architecture-board__node-focus { opacity: 1; }
+
+.architecture-board__node:hover .architecture-board__node-shape,
+.architecture-board__node:focus-visible .architecture-board__node-shape { stroke: var(--domain, var(--text-2)); fill: var(--surface-2); }
+.architecture-board__node:hover .architecture-board__node-plus,
+.architecture-board__node:focus-visible .architecture-board__node-plus,
+.architecture-board__node.is-selected .architecture-board__node-plus { stroke: var(--domain, var(--text-1)); }
+
+.architecture-board__node.is-emphasis .architecture-board__node-shape { stroke: var(--domain, var(--text-2)); stroke-width: 1.5; }
+.architecture-board__node.is-selected .architecture-board__node-shape { stroke: var(--domain, var(--text-2)); stroke-width: 2; fill: var(--surface-2); }
+.architecture-board__node.is-selected .architecture-board__node-type { fill: var(--domain, var(--text-2)); }
+.architecture-board__node.is-muted { opacity: .55; }
+
+/* One-time pulse ring on the first node, signalling the board is interactive */
+.architecture-board__node-ring {
+  fill: none;
+  stroke: var(--domain, var(--text-2));
+  stroke-width: 1.5;
+  opacity: 0;
+  pointer-events: none;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.architecture-board__node.is-hinting .architecture-board__node-ring { animation: architecture-board-ring 1400ms var(--ease-out) 1; }
+@keyframes architecture-board-ring {
+  from { opacity: .9; transform: scale(1); }
+  to { opacity: 0; transform: scale(1.14, 1.3); }
+}
+
+/* Edges: lit by default */
+.architecture-board__edge { transition: opacity var(--dur-2) var(--ease-out); }
+.architecture-board__edge-line {
+  fill: none;
+  stroke: var(--domain, var(--text-2));
+  stroke-opacity: .62;
+  stroke-width: 1.5;
+  transition: stroke-opacity var(--dur-2) var(--ease-out), stroke-width var(--dur-2) var(--ease-out);
+}
+.architecture-board__edge--async .architecture-board__edge-line { stroke-dasharray: 6 4; }
+.architecture-board__edge--external .architecture-board__edge-line { stroke-width: 1.25; stroke-dasharray: 1 3; stroke-linecap: round; }
+.architecture-board__edge--secure .architecture-board__edge-line { stroke-width: 4.5; }
+.architecture-board__edge-inner { fill: none; stroke: var(--surface-2); stroke-width: 1.5; }
+.architecture-board__edge-head { fill: none; stroke: none; }
+.architecture-board__arrow { fill: var(--domain, var(--text-2)); }
+
+.architecture-board__edge.is-emphasis .architecture-board__edge-line { stroke-opacity: 1; stroke-width: 2.25; }
+.architecture-board__edge--secure.is-emphasis .architecture-board__edge-line { stroke-width: 5; }
+.architecture-board__edge.is-muted,
+.architecture-board__edge-label.is-muted,
+.architecture-board__packet.is-muted { opacity: .55; }
+
+.architecture-board__draw { fill: none; stroke-width: 14; stroke-linecap: square; stroke-dasharray: 1 1; stroke-dashoffset: 0; }
+
+/* Edge labels (with a document glyph for the payload, and a lock on secure channels) */
+.architecture-board__edge-label { transition: opacity var(--dur-2) var(--ease-out); pointer-events: none; }
+.architecture-board__edge-label-bg { fill: var(--bg); stroke: var(--line); stroke-width: 1; }
+.architecture-board__edge-label-text { fill: var(--text-2); font: 400 12px/1 var(--font-mono); transition: fill var(--dur-1) var(--ease-out); }
+.architecture-board__edge-lock { fill: none; stroke: var(--domain, var(--text-2)); stroke-width: 1; }
+.architecture-board__edge-doc .architecture-board__packet-doc { fill: none; stroke: var(--domain, var(--text-2)); stroke-width: 1; }
+.architecture-board__edge-doc .architecture-board__packet-fold { stroke: var(--domain, var(--text-2)); }
+.architecture-board__edge-label.is-emphasis .architecture-board__edge-label-text { fill: var(--text-1); }
+.architecture-board__edge-label.is-emphasis .architecture-board__edge-label-bg { stroke: var(--domain, var(--line-strong)); }
+
+/* Packets: small documents travelling source → target */
+.architecture-board__packet { pointer-events: none; will-change: transform, opacity; }
+.architecture-board__packet-doc { fill: var(--domain, var(--text-2)); }
+.architecture-board__packet-fold { fill: none; stroke: var(--bg); stroke-width: 1; }
+.architecture-board__packet-lock { fill: none; stroke: var(--text-1); stroke-width: 1; }
+.architecture-board__packet-chip { fill: var(--bg); stroke: var(--domain, var(--line-strong)); stroke-width: 1; }
+.architecture-board__packet-text { fill: var(--text-1); font: 500 9px/1 var(--font-mono); letter-spacing: .04em; }
+.architecture-board__packet--parked { display: none; }
+.architecture-board.is-static-flow .architecture-board__packet { display: none; }
+.architecture-board.is-static-flow .architecture-board__packet--parked { display: inline; opacity: 1; }
+.architecture-board.is-pending .architecture-board__packet { visibility: hidden; }
+
+/* Entrance (JS adds is-pending only when IntersectionObserver exists and motion is allowed) */
+.architecture-board.is-pending .architecture-board__node-body { opacity: 0; transform: translateY(8px); }
+.architecture-board.is-pending .architecture-board__draw { stroke-dashoffset: 1; }
+.architecture-board.is-pending .architecture-board__edge-label { opacity: 0; }
+
+.architecture-board.is-revealing .architecture-board__node-body {
+  transition: opacity var(--dur-3) var(--ease-out) var(--delay, 0ms), transform var(--dur-3) var(--ease-out) var(--delay, 0ms);
+}
+.architecture-board.is-revealing .architecture-board__draw { transition: stroke-dashoffset var(--dur-3) var(--ease-out) var(--delay, 0ms); }
+.architecture-board.is-revealing .architecture-board__edge-label { transition: opacity var(--dur-2) var(--ease-out) var(--delay, 0ms); }
+
+/* Inspector */
+.architecture-board__inspector {
+  grid-area: inspector;
+  min-width: 0;
+  padding: 24px 16px;
+  border-top: 1px solid var(--line);
+  background-color: var(--surface-1);
+}
+
+.architecture-board__inspector-kicker,
+.architecture-board__connections-heading,
+.architecture-board__legend-heading,
+.architecture-board__text-summary {
+  margin: 0;
+  color: var(--text-2);
+  font: 500 var(--fs-label)/1.4 var(--font-mono);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.architecture-board__inspector-kicker { margin-bottom: 16px; }
+.architecture-board__inspector.is-empty .architecture-board__inspector-kicker { color: var(--domain, var(--text-2)); }
+
+.architecture-board__inspector-title {
+  margin: 0;
+  color: var(--text-1);
+  font: 500 1.5rem/1.15 var(--font-sans);
+  letter-spacing: -0.02em;
+}
+
+.architecture-board__meta { display: grid; gap: 8px; margin: 16px 0; padding-block: 16px; border-block: 1px solid var(--line); }
+.architecture-board__meta-row { display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 16px; align-items: baseline; }
+.architecture-board__meta dt { color: var(--text-2); font: 500 var(--fs-label)/1.4 var(--font-mono); letter-spacing: .12em; text-transform: uppercase; }
+.architecture-board__meta dd { margin: 0; color: var(--text-1); font-size: var(--fs-small); line-height: 1.5; }
+
+.architecture-board__inspector-description { margin: 0 0 24px; color: var(--text-2); font-size: var(--fs-small); line-height: 1.6; }
+.architecture-board__inspector.is-empty .architecture-board__inspector-description { margin-top: 12px; }
+.architecture-board__inspector-detail { display: grid; gap: 8px; padding-left: 12px; border-left: 2px solid var(--domain, var(--line-strong)); margin-bottom: 24px; }
+.architecture-board__inspector-detail .architecture-board__inspector-description { margin: 0; color: var(--text-1); }
+
+.architecture-board__connections + .architecture-board__connections { margin-top: 16px; }
+.architecture-board__connections-heading { margin-bottom: 4px; }
+.architecture-board__connections-list { margin: 0; padding: 0; list-style: none; }
+
+.architecture-board__connection {
+  display: grid;
+  grid-template-columns: 16px minmax(0, 1fr);
+  gap: 0 8px;
+  align-items: baseline;
+  width: 100%;
+  min-height: 44px;
+  padding: 8px 0;
+  border: 0;
+  border-top: 1px solid var(--line);
+  border-radius: 0;
+  background: none;
+  color: var(--text-1);
+  font: inherit;
+  font-size: var(--fs-small);
+  text-align: left;
+  cursor: pointer;
+}
+
+.architecture-board__connection-icon { color: var(--text-2); font-family: var(--font-mono); transition: transform var(--dur-1) var(--ease-out), color var(--dur-1) var(--ease-out); }
+.architecture-board__connection-name { line-height: 1.4; transition: color var(--dur-1) var(--ease-out); }
+.architecture-board__connection-meta { grid-column: 2; color: var(--text-2); font: 400 var(--fs-label)/1.4 var(--font-mono); }
+.architecture-board__connection:hover .architecture-board__connection-name,
+.architecture-board__connection:focus-visible .architecture-board__connection-name { color: var(--domain, var(--text-1)); }
+.architecture-board__connection:hover .architecture-board__connection-icon,
+.architecture-board__connection:focus-visible .architecture-board__connection-icon { color: var(--domain, var(--text-2)); transform: translateX(2px); }
+.architecture-board__connection:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* Legend */
+.architecture-board__legend {
+  grid-area: legend;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 24px;
+  padding: 16px;
+  border-top: 1px solid var(--line);
+  background-color: var(--surface-2);
+}
+
+.architecture-board__legend-list { display: flex; flex-wrap: wrap; gap: 8px 24px; margin: 0; padding: 0; list-style: none; }
+.architecture-board__legend-item { display: inline-flex; align-items: center; gap: 8px; color: var(--text-2); font: 400 var(--fs-label)/1.4 var(--font-mono); }
+.architecture-board__legend-sample { display: block; width: 40px; height: 12px; overflow: visible; }
+
+/* Text equivalent */
+.architecture-board__text { grid-area: text; padding: 0 16px; border-top: 1px solid var(--line); background-color: var(--surface-2); }
+.architecture-board__text-summary { display: flex; align-items: center; gap: 8px; min-height: 44px; cursor: pointer; list-style: none; }
+.architecture-board__text-summary::-webkit-details-marker { display: none; }
+.architecture-board__text-summary::before { content: "+"; width: 12px; color: var(--text-2); }
+.architecture-board__text[open] .architecture-board__text-summary::before { content: "−"; }
+.architecture-board__text-summary:hover { color: var(--text-1); }
+.architecture-board__text-summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.architecture-board__text-list {
+  display: grid;
+  gap: 4px;
+  max-width: 72ch;
+  margin: 0;
+  padding: 0 0 16px 1.5em;
+  color: var(--text-2);
+  font-size: var(--fs-small);
+  line-height: 1.6;
+}
+
+.architecture-board__text-list li::marker { color: var(--text-2); font-family: var(--font-mono); }
+
+@media (min-width: 1100px) {
+  .architecture-board {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-areas: "stage stage" "inspector legend" "inspector text";
+    grid-template-rows: auto auto 1fr;
+  }
+  .architecture-board--external-inspector {
+    grid-template-areas: "stage stage" "legend text";
+    grid-template-rows: auto auto;
+  }
+  .architecture-board__inspector { padding: 24px; border-right: 1px solid var(--line); }
+  .architecture-board--external-inspector .architecture-board__text { border-left: 1px solid var(--line); }
+}
+
+@media (max-width: 1023px) {
+  .architecture-board__scroll-hint { display: block; }
+}
+
+@media (max-width: 560px) {
+  .architecture-board__hint { display: none; }
+}
+
+/* ── Flow preview ───────────────────────────────────────────────────────── */
+
+.flow-preview { position: relative; width: 100%; min-width: 0; }
+.flow-preview__svg { display: block; width: 100%; height: auto; overflow: visible; }
+
+.flow-preview__layer { fill: var(--text-3); font-family: var(--font-mono); font-weight: 500; letter-spacing: .04em; }
+.flow-preview__rule { stroke: var(--line); stroke-width: 1; }
+
+.flow-preview__edge { fill: none; stroke: var(--line-strong); stroke-width: 1; }
+.flow-preview__edge--async { stroke-dasharray: 3 2.5; }
+.flow-preview__edge--external { stroke-width: .6; }
+.flow-preview__tick { fill: var(--line-strong); }
+.flow-preview__arrow { fill: var(--line-strong); }
+
+.flow-preview__lit { opacity: 0; transition: opacity var(--dur-1) var(--ease-out); }
+.flow-preview__lit .flow-preview__edge { stroke: var(--domain, var(--text-2)); }
+.flow-preview__lit .flow-preview__tick,
+.flow-preview__arrow--lit { fill: var(--domain, var(--text-2)); }
+
+.flow-preview__draw { fill: none; stroke-width: 8; stroke-linecap: square; stroke-dasharray: 1 1; stroke-dashoffset: 1; }
+
+.flow-preview__mark { fill: none; stroke: var(--line-strong); stroke-width: 1; transition: stroke var(--dur-2) var(--ease-out), fill var(--dur-2) var(--ease-out); }
+.flow-preview__mark--external { stroke-dasharray: 1.5 1.5; }
+.flow-preview__mark--output { fill: var(--line-strong); }
+.flow-preview__mark-detail { fill: none; stroke: var(--line-strong); stroke-width: 1; transition: stroke var(--dur-2) var(--ease-out), fill var(--dur-2) var(--ease-out); }
+.flow-preview__mark-detail--fill { fill: var(--line-strong); stroke: none; }
+
+.flow-preview__label { fill: var(--text-3); font-family: var(--font-mono); transition: fill var(--dur-2) var(--ease-out); }
+
+.flow-preview.is-active .flow-preview__lit { opacity: 1; }
+.flow-preview.is-active .flow-preview__draw {
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset var(--dur-3) var(--ease-out) calc(var(--layer, 0) * 80ms);
+}
+.flow-preview.is-active .flow-preview__mark { stroke: var(--domain, var(--text-2)); transition-delay: calc(var(--layer, 0) * 80ms); }
+.flow-preview.is-active .flow-preview__mark--output,
+.flow-preview.is-active .flow-preview__mark-detail--fill { fill: var(--domain, var(--text-2)); }
+.flow-preview.is-active .flow-preview__mark-detail:not(.flow-preview__mark-detail--fill) { stroke: var(--domain, var(--text-2)); }
+.flow-preview.is-active .flow-preview__label { fill: var(--text-2); }
+
+/* ── Reduced motion ─────────────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .architecture-board *,
+  .flow-preview * { transition: none !important; }
+
+  .architecture-board__node.is-hinting .architecture-board__node-ring { animation: none; }
+
+  .architecture-board.is-pending .architecture-board__node-body { opacity: 1; transform: none; }
+  .architecture-board.is-pending .architecture-board__draw { stroke-dashoffset: 0; }
+  .architecture-board.is-pending .architecture-board__edge-label { opacity: 1; }
+}
+
+/* Em telas estreitas o SVG do preview encolhe e os rótulos cairiam para ~7px.
+   O fluxo continua descrito no aria-label; visualmente ficam só as marcas e as linhas. */
+@media (max-width: 560px) {
+  .flow-preview--hero .flow-preview__label,
+  .flow-preview--row .flow-preview__label,
+  .flow-preview__layer,
+  .flow-preview__rule { display: none; }
+}
