@@ -51,7 +51,7 @@ export const CASE_STUDIES = {
       },
       {
         name: { pt: 'Ferramenta de Deploy', en: 'Deployment Tool' },
-        stack: 'C# .NET 8 · WPF · Installer · GitHub Actions',
+        stack: 'C# .NET 8 · WiX (MSI) · GitHub Actions',
         desc: {
           pt: 'Instalador Windows automatizado para provisionamento em máquinas de clientes.',
           en: 'Automated Windows installer for provisioning on client machines.',
@@ -68,7 +68,7 @@ export const CASE_STUDIES = {
       { pt: 'Arquitetura em camadas (controllers → services → models → integrations)', en: 'Layered architecture (controllers → services → models → integrations)' },
       { pt: 'Type-safety com Zod + Fastify type provider', en: 'Type safety with Zod + Fastify type provider' },
       { pt: 'Processamento assíncrono com filas (RabbitMQ) e automação (n8n)', en: 'Asynchronous processing with queues (RabbitMQ) and automation (n8n)' },
-      { pt: 'Deploy automatizado Windows (WPF) com CI/CD', en: 'Automated Windows deployment (WPF) with CI/CD' },
+      { pt: 'Instalador MSI (WiX) com CI/CD', en: 'MSI installer (WiX) with CI/CD' },
     ],
     impact: {
       pt: 'SaaS de gestão de documentos fiscais em produção, integrado a ERPs do mercado, com volume considerável de notas captadas e processadas automaticamente.',
