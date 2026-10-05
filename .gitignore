@@ -28,3 +28,6 @@ dist-ssr
 # Arquivos locais de trabalho
 .claude/
 Plano-para-Claude.md
+
+# Documentação, planos, prompts e notas de sessão (somente local)
+/docs/

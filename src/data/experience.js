@@ -10,12 +10,12 @@ export const EXPERIENCE = [
     },
     bullets: [
       {
-        pt: 'Principal desenvolvedor de middleware de integração fiscal em Node.js/TypeScript, cobrindo sincronização de dados com ERP de terceiros e processamento de notas fiscais eletrônicas.',
-        en: 'Lead developer of a tax integration middleware in Node.js/TypeScript, covering data sync with third-party ERPs and electronic invoice processing.',
+        pt: 'Principal desenvolvedor de middleware de integração fiscal em TypeScript (Bun/Fastify), cobrindo sincronização de dados com ERP de terceiros e processamento de notas fiscais eletrônicas.',
+        en: 'Lead developer of a tax integration middleware in TypeScript (Bun/Fastify), covering data sync with third-party ERPs and electronic invoice processing.',
       },
       {
-        pt: 'Backend e frontend de plataforma de prospecção com IA: Node.js/Fastify, React, busca semântica com Elasticsearch e RAG com LangChain e Neo4j.',
-        en: 'Backend and frontend of an AI prospecting platform: Node.js/Fastify, React, semantic search with Elasticsearch and RAG with LangChain and Neo4j.',
+        pt: 'Backend e frontend de plataforma de prospecção com IA: Node.js/Fastify, React, busca com Elasticsearch e busca semântica/RAG com LangChain e Neo4j.',
+        en: 'Backend and frontend of an AI prospecting platform: Node.js/Fastify, React, search with Elasticsearch and semantic search/RAG with LangChain and Neo4j.',
       },
       {
         pt: 'RBAC de ponta a ponta em plataforma corporativa (Go, React, React Native), agente de conectividade Windows em C#/.NET e padronização de CI/CD com Docker e GitHub Actions em múltiplos microsserviços.',

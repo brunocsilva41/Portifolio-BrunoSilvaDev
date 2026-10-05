@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Estudos de caso de sistemas em produção: automação fiscal integrada ao ERP Linx, app de segurança do trabalho, prospecção com IA e RAG e sistema para academia." />
+    <meta name="theme-color" content="#0B0E11" />
+    <title>Estudos de caso em ERP, fiscal, SST e IA · Bruno Silva</title>
+    <link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/geist-latin-var.woff2" />
+    <link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/instrument-serif-latin-italic.woff2" />
+    <link rel="stylesheet" href="/src/styles/site.css" />
+    <link rel="stylesheet" href="/src/styles/cases.css" />
+  </head>
+  <body class="cases-page" data-shell-label="Cases">
+    <a class="skip-link" href="#main-content" data-copy="skip">Pular para o conteúdo</a>
+    <header class="site-nav" id="navbar">
+      <div class="site-nav__inner container">
+        <a class="site-nav__brand" href="/"><span class="site-nav__brand-mark" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M3 4h2v16h-2zM5 4h4v2h-4zM7 6h2v5h-2zM5 11h5v2h-5zM8 13h2v5h-2zM5 18h5v2h-5zM13 4h2v16h-2zM15 4h6v2h-6zM15 18h6v2h-6z"/><rect class="signal" x="17" y="10" width="4" height="4" fill="#7FB2FF"/></svg></span><span class="visually-hidden">Bruno Silva</span></a>
+        <p class="site-nav__current" aria-hidden="true"><span class="site-nav__current-index">00</span><span class="site-nav__current-label">Cases</span></p>
+        <button class="site-nav__toggle" type="button" aria-expanded="false" aria-controls="site-nav-menu"><span data-copy="navMenu">Menu</span></button>
+        <nav class="site-nav__menu" id="site-nav-menu" aria-label="Navegação principal" data-copy-label="navAria">
+          <a class="site-nav__link" href="/#cases" data-section="cases" data-copy="navCases">Cases</a>
+          <a class="site-nav__link" href="/#depth" data-section="depth" data-copy="navDepth">Profundidade</a>
+          <a class="site-nav__link" href="/#work" data-section="work-hire" data-copy="navHire">Como trabalho</a>
+          <a class="site-nav__link" href="/#trajectory" data-section="trajectory" data-copy="navTrajectory">Trajetória</a>
+          <a class="site-nav__link" href="/#contact" data-section="contact" data-copy="navContact">Contato</a>
+          <div class="lang-toggle" role="group" aria-label="Idioma" data-copy-label="langAria"><button type="button" data-lang="pt">PT</button><button type="button" data-lang="en">EN</button></div>
+          <a class="site-nav__space" href="/space"><span data-copy="navSpace">Visão espacial</span> <span aria-hidden="true">↗</span></a>
+        </nav>
+      </div>
+      <span class="site-nav__progress" aria-hidden="true"></span>
+    </header>
+
+    <main id="main-content" class="cases-main" tabindex="-1">
+      <header class="cases-head" id="work" data-rail data-rail-index="01" data-rail-label="Trabalho" aria-labelledby="cases-title">
+        <div class="cases-head__grid container">
+          <p class="cases-head__index label" data-rail-target><span>01</span> <span data-copy="eyebrow">Cases · em produção</span></p>
+          <h1 class="cases-head__title" id="cases-title" data-copy="headline">Sistemas que sustentam a operação de empresas.</h1>
+          <p class="cases-head__intro" data-copy="intro">Integração fiscal com ERP, segurança do trabalho com app de campo, prospecção comercial com IA e a operação de uma academia com duas unidades. São sistemas que construí para empresas e que rodam em produção. Cada estudo mostra o problema de negócio, como a solução funciona por dentro e o impacto que ela trouxe.</p>
+          <dl class="cases-head__facts" id="cases-facts"></dl>
+        </div>
+      </header>
+
+      <section class="cases-browse" id="index" data-rail data-rail-index="02" data-rail-label="Índice" aria-labelledby="cases-browse-title">
+        <div class="container">
+          <div class="section-opener cases-browse__opener">
+            <p class="section-opener__index" data-rail-target>02</p>
+            <h2 class="section-opener__title" id="cases-browse-title" data-copy="browseTitle">Escolha pelo problema.</h2>
+            <p class="section-opener__intro" data-copy="browseIntro">Filtre por área, domínio ou tecnologia e abra o estudo completo de cada sistema.</p>
+          </div>
+        </div>
+
+        <div class="cases-toolbar">
+          <div class="cases-filters container" role="search" aria-label="Busca e filtros" data-copy-label="filtersAria">
+            <div class="cases-filters__tabs" id="cases-tabs" role="group" aria-label="Categoria" data-copy-label="categoryLabel"></div>
+            <div class="cases-filters__fields">
+              <div class="cases-field cases-field--search">
+                <label class="label" for="cases-search" data-copy="searchLabel">Buscar</label>
+                <input id="cases-search" class="cases-field__input" type="search" autocomplete="off" spellcheck="false" />
+              </div>
+              <div class="cases-field cases-field--select">
+                <label class="label" for="cases-domain" data-copy="domainLabel">Domínio</label>
+                <select id="cases-domain" class="cases-field__select"></select>
+              </div>
+              <div class="cases-field cases-field--select">
+                <label class="label" for="cases-tech" data-copy="techLabel">Tecnologia</label>
+                <select id="cases-tech" class="cases-field__select"></select>
+              </div>
+            </div>
+            <p class="cases-filters__count label" id="cases-count" aria-live="polite"></p>
+          </div>
+        </div>
+
+        <div class="cases-index container">
+          <div class="cases-index__layout">
+            <div class="cases-index__table">
+              <ol class="cases-index__list" id="cases-list"></ol>
+              <div class="cases-empty" id="cases-empty" hidden>
+                <p class="cases-empty__title" data-copy="emptyTitle">Nada corresponde a essa combinação.</p>
+                <p class="cases-empty__text" data-copy="emptyText">Tente outro termo ou remova algum filtro. A busca olha título, proposta, cliente, papel, domínios e tecnologias.</p>
+                <button class="cases-empty__clear" type="button" id="cases-clear" data-copy="clear">Limpar filtros</button>
+              </div>
+            </div>
+            <aside class="cases-peek" aria-hidden="true">
+              <div class="cases-peek__sticky">
+                <div class="cases-peek__frame" id="cases-preview"></div>
+                <p class="cases-peek__caption label" id="cases-preview-caption"></p>
+                <div class="cases-peek__body" id="cases-peek-body"></div>
+              </div>
+            </aside>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <section class="closing-cta cases-closing" id="contact" data-rail data-rail-index="03" data-rail-label="Contato" aria-labelledby="closing-title">
+      <div class="container">
+        <p class="cases-closing__index label" data-rail-target><span>03</span> <span data-copy="closingLabel">Contato</span></p>
+        <p class="closing-cta__statement" id="closing-title" data-copy="closing">Tem um sistema para construir ou destravar?</p>
+        <div class="cases-closing__engage">
+          <p class="cases-closing__text" id="closing-text" data-copy="closingText">Me conte o problema ou a ideia, do jeito que ela estiver. Eu volto com um caminho técnico claro e o primeiro passo para colocar no ar.</p>
+          <ul class="cases-closing__list" id="closing-engagements"></ul>
+        </div>
+        <div class="closing-cta__actions">
+          <a class="btn-primary" id="closing-mail" href="mailto:brunocesar.social@gmail.com"><span data-copy="closingAction">Escrever um e-mail</span> <span aria-hidden="true">→</span></a>
+          <ul class="closing-cta__list">
+            <li><a href="mailto:brunocesar.social@gmail.com"><span>brunocesar.social@gmail.com</span></a></li>
+            <li><a href="https://www.linkedin.com/in/dev-bruno-silva/" target="_blank" rel="noopener"><span>LinkedIn</span><span aria-hidden="true">↗</span></a></li>
+            <li><a href="https://github.com/brunocsilva41" target="_blank" rel="noopener"><span>GitHub</span><span aria-hidden="true">↗</span></a></li>
+            <li><a href="tel:+5511988644269"><span>+55 11 98864-4269</span></a></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <footer class="site-footer">
+      <div class="container">
+        <p data-copy="footerNote">© 2026 Bruno Silva · BC Consultoria e Desenvolvimento de Softwares · CNPJ 60.589.106/0001-02</p>
+      </div>
+    </footer>
+
+    <script type="module" src="/src/site/cases-main.js"></script>
+  </body>
+</html>

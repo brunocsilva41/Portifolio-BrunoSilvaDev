@@ -4,207 +4,169 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Portfólio de Bruno Silva, Software Engineer. Sistemas fiscais (NF-e/NFS-e/CT-e), agentes de IA, jogos multiplayer em tempo real e integrações com ERPs." />
-    <meta name="theme-color" content="#070914" />
+    <meta name="description" content="Engenheiro de software full stack em São Paulo: automação fiscal integrada ao ERP Linx, app de SST, gestão de academias e IA aplicada, do problema ao produto." />
+    <meta name="theme-color" content="#0B0E11" />
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="Bruno Silva | Software Engineer" />
-    <meta property="og:description" content="Sistemas fiscais, agentes de IA, jogos multiplayer e integrações com ERPs. Explore os projetos em uma constelação 3D interativa." />
+    <meta property="og:title" content="Bruno Silva · Engenheiro de software full stack em São Paulo" />
+    <meta property="og:description" content="Engenheiro de software full stack em São Paulo: automação fiscal integrada ao ERP Linx, app de SST, gestão de academias e IA aplicada, do problema ao produto." />
     <meta property="og:locale" content="pt_BR" />
-    <title>Bruno Silva | Software Engineer</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+    <title>Bruno Silva · Engenheiro de software full stack em São Paulo</title>
+    <link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/geist-latin-var.woff2" />
+    <link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/instrument-serif-latin-italic.woff2" />
     <link rel="stylesheet" href="/src/styles/site.css" />
+    <link rel="stylesheet" href="/src/styles/home.css" />
   </head>
-  <body>
-    <div id="stars-bg"></div>
-    <div id="nebula-bg"></div>
-
-    <nav id="navbar">
-      <a href="#contact" class="nav-status-badge" title="Dispon&iacute;vel para projetos">
-        <span class="status-radar" aria-hidden="true">
-          <span class="status-ping"></span>
-          <span class="status-dot"></span>
-        </span>
-        <span class="status-text-full" data-i18n="nav.available">Dispon&iacute;vel para projetos</span>
-        <span class="status-text-short" data-i18n="nav.availableShort">Dispon&iacute;vel</span>
-      </a>
-      <div class="nav-links">
-        <a href="#about" class="nav-link" data-i18n="nav.about">Sobre</a>
-        <a href="#experience" class="nav-link" data-i18n="nav.experience">Experi&ecirc;ncia</a>
-        <a href="#projects" class="nav-link" data-i18n="nav.projects">Projetos</a>
-        <a href="#contact" class="nav-link" data-i18n="nav.contact">Contato</a>
-        <div class="lang-toggle">
-          <button type="button" data-lang="pt">PT</button>
-          <button type="button" data-lang="en">EN</button>
-        </div>
-        <a href="/space.html" class="nav-space-btn">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
-          </svg>
-          <span data-i18n="nav.space">Vis&atilde;o Espacial</span>
-        </a>
+  <body class="home">
+    <a class="skip-link" href="#main-content" data-copy="a11y.skip">Pular para o conteúdo</a>
+    <header class="site-nav" id="navbar">
+      <div class="site-nav__inner container">
+        <a class="site-nav__brand" href="/"><span class="site-nav__brand-mark" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M3 4h2v16h-2zM5 4h4v2h-4zM7 6h2v5h-2zM5 11h5v2h-5zM8 13h2v5h-2zM5 18h5v2h-5zM13 4h2v16h-2zM15 4h6v2h-6zM15 18h6v2h-6z"/><rect class="signal" x="17" y="10" width="4" height="4" fill="#7FB2FF"/></svg></span><span class="visually-hidden">Bruno Silva</span></a>
+        <p class="site-nav__current" aria-hidden="true"><span class="site-nav__current-index">00</span><span class="site-nav__current-label" data-copy="shell.home">Início</span></p>
+        <button class="site-nav__toggle" type="button" aria-expanded="false" aria-controls="site-nav-menu"><span data-copy="nav.menu">Menu</span></button>
+        <nav class="site-nav__menu" id="site-nav-menu" aria-label="Navegação principal" data-copy-aria="nav.aria">
+          <a class="site-nav__link" href="#cases" data-section="cases" data-copy="nav.cases">Cases</a>
+          <a class="site-nav__link" href="#depth" data-section="depth" data-copy="nav.depth">Profundidade</a>
+          <a class="site-nav__link" href="#work" data-section="work" data-copy="nav.work">Como trabalho</a>
+          <a class="site-nav__link" href="#trajectory" data-section="trajectory" data-copy="nav.trajectory">Trajetória</a>
+          <a class="site-nav__link" href="#contact" data-section="contact" data-copy="nav.contact">Contato</a>
+          <div class="lang-toggle" role="group" aria-label="Idioma" data-copy-aria="nav.lang"><button type="button" data-lang="pt">PT</button><button type="button" data-lang="en">EN</button></div>
+          <a class="site-nav__space" href="/space"><span data-copy="nav.space">Visão espacial</span> <span aria-hidden="true">↗</span></a>
+        </nav>
       </div>
-    </nav>
+      <span class="site-nav__progress" aria-hidden="true"></span>
+    </header>
 
-    <div id="profile-view">
-      <section id="hero-section" class="port-section">
-        <div class="hero-content">
-          <p class="hero-greeting" data-i18n="hero.greeting">Ol&aacute;, eu sou</p>
-          <h1 class="hero-name"><span class="gradient-text">Bruno Silva</span></h1>
-          <p class="hero-subtitle" data-i18n="hero.subtitle">Software Engineer | Sistemas Fiscais &middot; IA &middot; Multiplayer</p>
-          <p class="hero-tagline" data-i18n="hero.tagline">Engenheiro de software focado em resolver problemas reais.</p>
-          <div class="hero-buttons">
-            <a href="#projects" class="cta-primary" data-i18n="hero.cta.projects">Ver Projetos</a>
-            <a href="/space.html" class="cta-space">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
-              </svg>
-              <span data-i18n="hero.cta.space">Vis&atilde;o Espacial</span>
-            </a>
-          </div>
-          <div class="stats-strip">
-            <div class="stat-item"><span class="stat-number" id="stat-years">4+</span><span class="stat-label" data-i18n="stats.years">Anos em tecnologia</span></div>
-            <div class="stat-item"><span class="stat-number" id="stat-projects">15</span><span class="stat-label" data-i18n="stats.projects">Projetos reais</span></div>
-            <div class="stat-item"><span class="stat-number" id="stat-techs">30+</span><span class="stat-label" data-i18n="stats.techs">Tecnologias</span></div>
-            <div class="stat-item"><span class="stat-number" id="stat-cases">2</span><span class="stat-label" data-i18n="stats.cases">Case studies</span></div>
-          </div>
-        </div>
-      </section>
-
-      <section id="about" class="port-section">
-        <h2 class="section-title" data-i18n="section.about">Sobre</h2>
-        <div class="about-content">
-          <p data-i18n="about.p1"></p>
-          <p class="about-cta" data-i18n="about.p2"></p>
-        </div>
-      </section>
-
-      <section id="experience" class="port-section">
-        <h2 class="section-title" data-i18n="section.experience">Experi&ecirc;ncia</h2>
-        <div class="timeline" id="experience-timeline"></div>
-      </section>
-
-      <section id="skills" class="port-section">
-        <h2 class="section-title" data-i18n="section.skills">Skills</h2>
-        <div class="skills-categories">
-          <div class="skills-category">
-            <h3 class="skills-cat-title" style="color: var(--accent-blue)" data-i18n="skills.frontend">Frontend</h3>
-            <div class="skills-grid">
-              <div class="skill-card"><span class="skill-name">TypeScript</span></div>
-              <div class="skill-card"><span class="skill-name">React</span></div>
-              <div class="skill-card"><span class="skill-name">Next.js</span></div>
-              <div class="skill-card"><span class="skill-name">React Native</span></div>
-              <div class="skill-card"><span class="skill-name">Tailwind CSS</span></div>
-              <div class="skill-card"><span class="skill-name">Three.js</span></div>
+    <main id="main-content">
+      <!-- 00 Hero: apresentação + gancho (sem lista de projetos) -->
+      <section class="hero" id="hero" aria-labelledby="hero-title" data-rail data-rail-index="00" data-rail-label="Início" data-copy-rail="shell.home">
+        <div class="hero__inner container">
+          <p class="label hero__eyebrow" data-rail-target>
+            <span id="hero-location">São Paulo, Brasil · remoto</span>
+            <span class="hero__status" id="hero-availability">Disponível</span>
+          </p>
+          <header class="hero__identity">
+            <h1 class="hero__name" id="hero-title">Bruno Silva</h1>
+            <p class="hero__role"><span id="hero-role">Engenheiro de software full stack</span><span class="hero__role-sep" aria-hidden="true"> · </span><span class="hero__role-title" id="hero-role-title">Fundador da BC Consultoria e Desenvolvimento de Softwares</span></p>
+            <p class="hero__focus" id="hero-focus"><span class="hero__focus-label">Foco</span> TypeScript · Node.js · Go · React · React Native · C# / .NET · PostgreSQL · IA aplicada · RAG</p>
+          </header>
+          <p class="hero__statement" id="hero-statement"><span class="hero__line">Me apresente um problema.</span> <span class="hero__line">Eu entrego <em class="hero__accent">o sistema que resolve</em>.</span></p>
+          <div class="hero__body">
+            <div class="hero__lead">
+              <ol class="hero__feats" id="hero-feats"></ol>
+              <p class="hero__hook" id="hero-hook">Cada um desses sistemas começou como um problema que ninguém queria encarar.</p>
             </div>
-          </div>
-          <div class="skills-category">
-            <h3 class="skills-cat-title" style="color: var(--accent-green)" data-i18n="skills.backend">Backend</h3>
-            <div class="skills-grid">
-              <div class="skill-card"><span class="skill-name">Node.js</span></div>
-              <div class="skill-card"><span class="skill-name">Fastify</span></div>
-              <div class="skill-card"><span class="skill-name">NestJS</span></div>
-              <div class="skill-card"><span class="skill-name">Go</span></div>
-              <div class="skill-card"><span class="skill-name">Laravel</span></div>
-              <div class="skill-card"><span class="skill-name">.NET</span></div>
-            </div>
-          </div>
-          <div class="skills-category">
-            <h3 class="skills-cat-title" style="color: var(--accent-purple)" data-i18n="skills.infra">Bancos &amp; Infra</h3>
-            <div class="skills-grid">
-              <div class="skill-card"><span class="skill-name">PostgreSQL</span></div>
-              <div class="skill-card"><span class="skill-name">MySQL</span></div>
-              <div class="skill-card"><span class="skill-name">Redis</span></div>
-              <div class="skill-card"><span class="skill-name">Docker</span></div>
-              <div class="skill-card"><span class="skill-name">Kubernetes</span></div>
-              <div class="skill-card"><span class="skill-name">AWS</span></div>
-            </div>
-          </div>
-          <div class="skills-category">
-            <h3 class="skills-cat-title" style="color: #ffd76b" data-i18n="skills.tools">Ferramentas &amp; IA</h3>
-            <div class="skills-grid">
-              <div class="skill-card"><span class="skill-name">GitHub Actions</span></div>
-              <div class="skill-card"><span class="skill-name">Playwright</span></div>
-              <div class="skill-card"><span class="skill-name">Elasticsearch</span></div>
-              <div class="skill-card"><span class="skill-name">RabbitMQ</span></div>
-              <div class="skill-card"><span class="skill-name">LangChain</span></div>
-              <div class="skill-card"><span class="skill-name">MCP</span></div>
+            <div class="hero__actions">
+              <a class="btn-primary" href="#cases"><span data-copy="hero.cta.cases">Ver projetos</span> <span aria-hidden="true">→</span></a>
+              <a class="link-arrow" href="#contact"><span data-copy="hero.cta.contact">Conversar</span> <span class="link-arrow__icon" aria-hidden="true">→</span></a>
             </div>
           </div>
         </div>
-      </section>
 
-      <section id="case-studies" class="port-section">
-        <h2 class="section-title" data-i18n="section.cases">Case Studies</h2>
-        <div class="cs-highlight-grid" id="case-study-cards"></div>
-      </section>
-
-      <section id="projects" class="port-section">
-        <h2 class="section-title" data-i18n="section.projects">Projetos em Destaque</h2>
-        <div class="projects-grid" id="project-cards"></div>
-      </section>
-
-      <section id="how-i-work" class="port-section">
-        <h2 class="section-title" data-i18n="section.how">Como eu trabalho</h2>
-        <div class="how-grid">
-          <div class="how-card">
-            <h3 class="how-title" data-i18n="how.quality.title">Qualidade com testes</h3>
-            <p class="how-desc" data-i18n="how.quality.desc"></p>
-          </div>
-          <div class="how-card">
-            <h3 class="how-title" data-i18n="how.cicd.title">CI/CD desde o in&iacute;cio</h3>
-            <p class="how-desc" data-i18n="how.cicd.desc"></p>
-          </div>
-          <div class="how-card">
-            <h3 class="how-title" data-i18n="how.security.title">Seguran&ccedil;a em primeiro lugar</h3>
-            <p class="how-desc" data-i18n="how.security.desc"></p>
-          </div>
-          <div class="how-card">
-            <h3 class="how-title" data-i18n="how.ai.title">IA com rigor</h3>
-            <p class="how-desc" data-i18n="how.ai.desc"></p>
+        <div class="hero__foot" id="hero-credentials-band">
+          <div class="hero__foot-inner container">
+            <h2 class="visually-hidden" data-copy="hero.credentials">Em números</h2>
+            <ul class="credentials" id="hero-credentials"></ul>
+            <a class="hero__cue" href="#cases"><span data-copy="hero.cue">Veja como cada um foi construído</span> <span class="hero__cue-icon" aria-hidden="true">↓</span></a>
           </div>
         </div>
       </section>
 
-      <section id="contact" class="port-section">
-        <h2 class="section-title" data-i18n="section.contact">Contato</h2>
-        <div class="contact-links">
-          <a href="mailto:brunocesar.social@gmail.com" class="contact-link" target="_blank">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-            brunocesar.social@gmail.com
-          </a>
-          <a href="https://github.com/brunocsilva41" class="contact-link" target="_blank">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
-            GitHub
-          </a>
-          <a href="https://www.linkedin.com/in/dev-bruno-silva/" class="contact-link" target="_blank">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
-            LinkedIn
-          </a>
-          <a href="tel:+5511988644269" class="contact-link" target="_blank">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-            +55 11 988644269
-          </a>
+      <!-- 01 Cases: seletor compacto (todos os painéis ficam no DOM) -->
+      <section class="home-section cases" id="cases" aria-labelledby="cases-title" data-rail data-rail-index="01" data-rail-label="Cases" data-copy-rail="nav.cases">
+        <div class="container">
+          <header class="section-opener">
+            <p class="section-opener__index" data-rail-target>01</p>
+            <h2 class="section-opener__title" id="cases-title">Quatro sistemas que o negócio usa todo dia.</h2>
+          </header>
+          <div class="case-selector" id="case-selector">
+            <div class="case-selector__nav">
+              <div class="case-selector__tabs" id="case-tabs" role="tablist" aria-orientation="vertical" aria-label="Estudos de caso" data-copy-aria="cases.tabs"></div>
+              <p class="case-selector__more"><a class="link-arrow" href="/cases"><span data-copy="cases.all">Todos os estudos de caso</span> <span class="link-arrow__icon" aria-hidden="true">→</span></a></p>
+            </div>
+            <div class="case-selector__panels" id="case-list"></div>
+          </div>
         </div>
       </section>
 
-      <footer id="footer">
-        <p data-i18n="footer.rights">&copy; 2026 Bruno Silva. Todos os direitos reservados.</p>
-      </footer>
-    </div>
-    <div id="project-modal">
-      <div class="modal-backdrop"></div>
-      <div class="modal-card">
-        <div class="modal-header">
-          <button class="modal-close">&times;</button>
-          <div class="modal-tag" id="modal-tag"></div>
-          <h3 class="modal-title" id="modal-title"></h3>
-          <div class="modal-role" id="modal-role"></div>
+      <!-- 02 Capabilities -->
+      <section class="home-section band band--raised capabilities" id="depth" aria-labelledby="depth-title" data-rail data-rail-index="02" data-rail-label="Profundidade" data-copy-rail="nav.depth">
+        <div class="container capabilities__grid">
+          <header class="section-opener capabilities__opener">
+            <p class="section-opener__index" data-rail-target>02</p>
+            <h2 class="section-opener__title" id="depth-title" data-copy="depth.title">O que sustenta cada entrega.</h2>
+          </header>
+          <ol class="capabilities__list" id="capability-list" role="list"></ol>
         </div>
-        <p class="modal-desc" id="modal-desc"></p>
-        <div class="modal-techs" id="modal-techs"></div>
-        <div class="modal-links" id="modal-links"></div>
+      </section>
+
+      <!-- 03 Como trabalho -->
+      <section class="home-section approach" id="work" aria-labelledby="work-title" data-rail data-rail-index="03" data-rail-label="Como trabalho" data-copy-rail="nav.work">
+        <div class="container">
+          <header class="section-opener">
+            <p class="section-opener__index" data-rail-target>03</p>
+            <h2 class="section-opener__title" id="work-title">Do problema ao produto.</h2>
+          </header>
+          <ol class="approach__steps" id="approach-steps"></ol>
+          <div class="approach__close">
+            <p class="approach__statement" id="approach-intro">Pode ser um ERP que ninguém quer tocar ou uma ideia que ainda cabe num guardanapo: eu entro de ponta a ponta e entrego um produto viável, funcionando e que dá gosto de usar.</p>
+            <a class="btn-primary approach__cta" id="approach-cta" href="mailto:brunocesar.social@gmail.com"><span data-copy="work.cta">Conversar sobre a sua ideia</span> <span aria-hidden="true">→</span></a>
+          </div>
+        </div>
+      </section>
+
+      <!-- 04 Trajectory -->
+      <section class="home-section band band--raised trajectory" id="trajectory" aria-labelledby="trajectory-title" data-rail data-rail-index="04" data-rail-label="Trajetória" data-copy-rail="nav.trajectory">
+        <div class="container trajectory__grid">
+          <header class="section-opener trajectory__opener">
+            <p class="section-opener__index" data-rail-target>04</p>
+            <h2 class="section-opener__title" id="trajectory-title" data-copy="trajectory.title">Do suporte técnico ao full stack.</h2>
+            <p class="section-opener__intro" id="trajectory-intro">Comecei no suporte técnico e na programação de uma fabricante de controle de acesso, resolvendo problema de cliente na linha de frente. Esse olhar de operação veio comigo para a engenharia: hoje desenho e entrego sistemas fiscais, de segurança do trabalho, de gestão de academias e de IA aplicada, para empresas e clientes diretos.</p>
+          </header>
+          <ol class="trajectory__list" id="trajectory-list"></ol>
+        </div>
+      </section>
+
+      <!-- 05 Independent projects -->
+      <section class="home-section independent" id="projects" aria-labelledby="projects-title" data-rail data-rail-index="05" data-rail-label="Independentes" data-copy-rail="shell.projects">
+        <div class="container">
+          <header class="section-opener">
+            <p class="section-opener__index" data-rail-target>05</p>
+            <h2 class="section-opener__title" id="projects-title" data-copy="projects.title">Projetos independentes.</h2>
+            <p class="section-opener__intro" data-copy="projects.intro">O que eu construo por conta própria, por desafio e curiosidade: um jogo para a turma, ferramentas para agentes de IA e utilitários que faltavam no meu Windows.</p>
+          </header>
+          <div class="indie" id="independent-list"></div>
+        </div>
+      </section>
+
+      <!-- 06 Contact -->
+      <section class="closing-cta" id="contact" aria-labelledby="contact-title" data-rail data-rail-index="06" data-rail-label="Contato" data-copy-rail="nav.contact">
+        <div class="container">
+          <header class="section-opener section-opener--compact">
+            <p class="section-opener__index" data-rail-target>06</p>
+            <h2 class="section-opener__title visually-hidden" id="contact-title" data-copy="contact.title">Contato</h2>
+          </header>
+          <div class="closing-cta__lead">
+            <p class="closing-cta__statement" id="contact-statement">Qual é o próximo sistema que a sua empresa precisa?</p>
+            <p class="closing-cta__text" id="contact-text">Me conte o contexto: um problema, uma ideia ou um sistema que precisa evoluir. Eu respondo com um caminho técnico claro e o primeiro passo para tirar do papel.</p>
+          </div>
+          <div class="closing-cta__actions">
+            <a class="btn-primary" id="contact-cta" href="mailto:brunocesar.social@gmail.com"><span data-copy="contact.cta">Escrever um e-mail</span> <span aria-hidden="true">→</span></a>
+            <ul class="closing-cta__list" id="contact-list" aria-label="Canais de contato" data-copy-aria="contact.list">
+              <li><a href="mailto:brunocesar.social@gmail.com">brunocesar.social@gmail.com</a></li>
+              <li><a href="https://www.linkedin.com/in/dev-bruno-silva/" target="_blank" rel="noopener noreferrer">LinkedIn <span aria-hidden="true">↗</span></a></li>
+              <li><a href="https://github.com/brunocsilva41" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a></li>
+              <li><a href="tel:+5511988644269">+55 11 98864-4269</a></li>
+            </ul>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <p class="site-footer__legal" id="footer-legal">© 2026 Bruno Silva · BC Consultoria e Desenvolvimento de Softwares · CNPJ 60.589.106/0001-02</p>
       </div>
-    </div>
+    </footer>
 
     <script type="module" src="/src/site/site-main.js"></script>
   </body>
